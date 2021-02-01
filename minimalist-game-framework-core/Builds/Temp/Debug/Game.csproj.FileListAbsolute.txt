@@ -19,3 +19,10 @@ C:\Users\tomat\OneDrive\Documents\GitHub\project-2---recreate-a-classic-video-ga
 C:\Users\tomat\OneDrive\Documents\GitHub\project-2---recreate-a-classic-video-game-clash-of-the-bubbas\minimalist-game-framework-core\Builds\Temp\Debug\Game.csproj.CoreCompileInputs.cache
 C:\Users\tomat\OneDrive\Documents\GitHub\project-2---recreate-a-classic-video-game-clash-of-the-bubbas\minimalist-game-framework-core\Builds\Temp\Debug\Game.exe
 C:\Users\tomat\OneDrive\Documents\GitHub\project-2---recreate-a-classic-video-game-clash-of-the-bubbas\minimalist-game-framework-core\Builds\Temp\Debug\Game.pdb
+C:\Users\brian\Documents\GitHub\project-2---recreate-a-classic-video-game-clash-of-the-bubbas\minimalist-game-framework-core\Builds\Debug\Game.exe.config
+C:\Users\brian\Documents\GitHub\project-2---recreate-a-classic-video-game-clash-of-the-bubbas\minimalist-game-framework-core\Builds\Debug\Game.exe
+C:\Users\brian\Documents\GitHub\project-2---recreate-a-classic-video-game-clash-of-the-bubbas\minimalist-game-framework-core\Builds\Debug\Game.pdb
+C:\Users\brian\Documents\GitHub\project-2---recreate-a-classic-video-game-clash-of-the-bubbas\minimalist-game-framework-core\Builds\Temp\Debug\Game.csprojAssemblyReference.cache
+C:\Users\brian\Documents\GitHub\project-2---recreate-a-classic-video-game-clash-of-the-bubbas\minimalist-game-framework-core\Builds\Temp\Debug\Game.csproj.CoreCompileInputs.cache
+C:\Users\brian\Documents\GitHub\project-2---recreate-a-classic-video-game-clash-of-the-bubbas\minimalist-game-framework-core\Builds\Temp\Debug\Game.exe
+C:\Users\brian\Documents\GitHub\project-2---recreate-a-classic-video-game-clash-of-the-bubbas\minimalist-game-framework-core\Builds\Temp\Debug\Game.pdb
