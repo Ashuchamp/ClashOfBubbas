@@ -121,8 +121,8 @@ class Game
         time++;
 
         makePlatforms();
-        charActions();
-
+        //charActions();
+        mainCharacter.respondToKey(Engine.GetKeyHeld(Key.A));
         jumping();
         bulletStuff();
         //}

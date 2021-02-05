@@ -52,7 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Enemy.cs" />
+    <Compile Include="Game\Enemy.cs" />
     <Compile Include="Engine\Audio.cs" />
     <Compile Include="Engine\Utility\Bounds2.cs" />
     <Compile Include="Engine\Utility\Color.cs" />
@@ -60,14 +60,16 @@
     <Compile Include="Engine\Graphics.cs" />
     <Compile Include="Engine\Input.cs" />
     <Compile Include="Engine\Engine.cs" />
+    <Compile Include="Game\Character.cs" />
     <Compile Include="Game\Game.cs" />
     <Compile Include="Engine\SDL2\SDL2.cs" />
     <Compile Include="Engine\SDL2\SDL2_image.cs" />
     <Compile Include="Engine\Utility\Vector2.cs" />
     <Compile Include="Engine\SDL2\SDL2_mixer.cs" />
     <Compile Include="Engine\SDL2\SDL2_ttf.cs" />
-    <Compile Include="Platform.cs" />
-    <Compile Include="ScoreBoard.cs" />
+    <Compile Include="Game\Platform.cs" />
+    <Compile Include="Game\Powerup.cs" />
+    <Compile Include="Game\ScoreBoard.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
