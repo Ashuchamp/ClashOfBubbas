@@ -54,7 +54,7 @@ class Game
     {
 
     }
-
+    //
     int score = 0;
     int count = 0;
     Boolean jump = false;
