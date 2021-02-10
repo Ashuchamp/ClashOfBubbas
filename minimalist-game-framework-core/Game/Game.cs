@@ -74,7 +74,7 @@ class Game
         //platforms.Add(plat2);
         //platforms.Add(plat3);
         Random random = new System.Random();
-
+        //
         if (!jump && !movingDown)
         {
             charLocation.Y += 5;
