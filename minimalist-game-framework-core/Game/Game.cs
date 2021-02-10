@@ -22,7 +22,7 @@ class Game
 
     Vector2 charLocation = new Vector2(145, 440);
     //Vector2 platLocation = new Vector2(100, 300);
-    ArrayList platforms = new ArrayList();
+    List<Platform> platforms = new List<Platform>();
     ArrayList trampolines = new ArrayList();
     ArrayList bullets = new ArrayList();
     ArrayList enemies = new ArrayList();
@@ -91,12 +91,12 @@ class Game
         if (!compiled)
         {
             lastPlatY = 470;
-            platforms.Add(new Vector2(140, 465));
+            platforms.Add(new Platform(new Vector2(140, 465)));
             for (int i = 0; i < 10; i++)
             {
                 //int enemyProb = random.Next(0, 100);
                 lastPlatY = random.Next(lastPlatY - 125, lastPlatY - 50);
-                Vector2 temp = new Vector2(random.Next(0, 280), lastPlatY);
+                Platform temp = new Platform(new Vector2(random.Next(0, 280), lastPlatY));
 
                 platforms.Add(temp);
                 //Engine.DrawTexture(customPlatT, temp);
@@ -104,9 +104,9 @@ class Game
             compiled = true;
         }
 
-        foreach (Vector2 plat in platforms)
+        foreach (Platform plat in platforms)
         {
-            Engine.DrawTexture(customPlatT, plat);
+            Engine.DrawTexture(customPlatT, plat.getVector());
         }
         foreach (Vector2 enemy in enemies)
         {
@@ -154,7 +154,7 @@ class Game
             {
                 brokenPlatforms.Add(platforms[i]);
                 Vector2 temp = new Vector2();
-                temp = (Vector2)platforms[1];
+                temp = platforms[1].getVector();
 
             }
         }
@@ -260,8 +260,8 @@ class Game
         Random random = new System.Random();
         for (int i = 0; i < brokenPlatforms.Count; i++)
         {
-            Vector2 platform = (Vector2)platforms[i];
-            if ((Math.Abs(charLocation.X - platform.X) <= 40 && Math.Abs(charLocation.Y - platform.Y) <= 29) && random.Next(0, 100) > 80)
+            Vector2 platformV = platforms[i].getVector();
+            if ((Math.Abs(charLocation.X - platformV.X) <= 40 && Math.Abs(charLocation.Y - platformV.Y) <= 29) && random.Next(0, 100) > 80)
             {
                 brokenPlatforms.RemoveAt(i);
                 return;
@@ -322,9 +322,10 @@ class Game
     {
         for (int i = 0; i < platforms.Count; i++)
         {
-            Vector2 temp = (Vector2)platforms[i];
-            temp.Y = temp.Y + 10;
-            platforms[i] = temp;
+            Platform temp = platforms[i];
+            Vector2 tempVec = temp.getVector();
+            tempVec.Y = tempVec.Y + 10;
+            platforms[i] = new Platform(tempVec);
         }
 
         for (int i = 0; i < enemies.Count; i++)
@@ -346,14 +347,14 @@ class Game
     {
         Random random = new System.Random();
 
-        Vector2 temp1 = (Vector2)platforms[0];
+        Vector2 temp1 = platforms[0].getVector();
         if (temp1.Y > 490)
         {
-            temp1 = (Vector2)platforms[platforms.Count - 1];
+            temp1 = platforms[platforms.Count - 1].getVector();
             int yLoc = (int)temp1.Y;
             int newY = random.Next(yLoc - 125, yLoc - 50);
             int newX = random.Next(0, 280);
-            platforms.Add(new Vector2(newX, newY));
+            platforms.Add(new Platform(new Vector2(newX, newY)));
             platforms.RemoveAt(0);
 
             int enemyProb = random.Next(0, 100);
@@ -373,6 +374,19 @@ class Game
         }
     }
 
+    public Boolean hitting(Vector2 charLocation, List<Platform> platforms)
+    {
+        foreach (Platform platform in platforms)
+        {
+            if (platform.hittingPlatform(charLocation))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public Boolean hitting(Vector2 charLocation, ArrayList platforms)
     {
         foreach (Vector2 platform in platforms)
@@ -385,5 +399,4 @@ class Game
 
         return false;
     }
-
 }
