@@ -5,29 +5,52 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-internal class Character
+class Character
 {
     Texture charTexture = Engine.LoadTexture("charR.png");
     //readonly Texture charLeft = Engine.LoadTexture("charL.png");
     //readonly Texture shoot = Engine.LoadTexture("shoot.png");
     private Vector2 charLocation;
     private Boolean powerupActivated;
+    //private Boolean jump = false;
     //private ArrayList powerups = new ArrayList();
 
     public Vector2 getLocation()
     {
         return charLocation;
+    } 
+    public void setXLoc(float xIncrement)
+    {
+        charLocation.X += xIncrement;
     }
-
+    public void setYLoc(float yIncrement)
+    {
+        charLocation.Y += yIncrement;
+    }
+    public void newYPos(float newY)
+    {
+        charLocation.Y = newY;
+    }
+    public Texture getCharTexture()
+    {
+        return charTexture;
+    }
+    /*public Boolean getJump()
+    {
+        return jump;
+    }
+    public void setJump(Boolean newJump)
+    {
+        jump = newJump;
+    }*/
     public Character()
     {
-        charLocation = new Vector2(460, 150);
+        charLocation = new Vector2(145, 340);
         powerupActivated = false;
     }
-
-    public void respondToKey(Key keyName)
+    public void respondToKey(String keyName)
     {
-        if (keyName == 'A') // && charLocation.X > 0)
+        if (keyName == "A") // && charLocation.X > 0)
         {
             charTexture = Engine.LoadTexture("charL.png");
 
@@ -70,7 +93,7 @@ internal class Character
     public void addPowerups(Powerup powerup)
     {
         //get location from char and location of powerups
-        if (charLocation.X == powerup.X && charLocation.Y == powerup.Y)
+        if (charLocation.X == powerup.getLocation().X && charLocation.Y == powerup.getLocation().Y)
         {
             //if match then add powerup to arraylist
             //powerups.Add(powerup);
@@ -122,9 +145,9 @@ internal class Character
         powerupActivated = false;
     }
 
-    public void jumping()
+    /*public void jumping()
     {
-        if (jump || hittingPlat(charLocation, platforms))
+        if (jump || hitting(charLocation, platforms))
         {
             jump = true;
             if (count < 25 && jump == true)
@@ -173,4 +196,16 @@ internal class Character
             downCount = 0;
         }
     }
+
+    public Boolean hitting(Vector2 charLocation, ArrayList platforms)
+    {
+        foreach (Vector2 platform in platforms)
+        {
+            if (Math.Abs(charLocation.X - platform.X) <= 40 && Math.Abs(charLocation.Y - platform.Y) <= 29)
+            {
+                return true;
+            }
+        }
+        return false;
+    }*/
 }

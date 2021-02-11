@@ -20,7 +20,7 @@ class Game
 
     readonly Texture background = Engine.LoadTexture("background.jpg");
 
-    Vector2 charLocation = new Vector2(145, 440);
+    //Vector2 charLocation = new Vector2(145, 440);
     //Vector2 platLocation = new Vector2(100, 300);
     ArrayList platforms = new ArrayList();
     ArrayList trampolines = new ArrayList();
@@ -72,12 +72,12 @@ class Game
 
         if (!jump && !movingDown)
         {
-            charLocation.Y += 5;
+            mainCharacter.setYLoc(5);
         }
         //charLocation.Y += 5;
 
         Engine.DrawTexture(background, bck);
-        Engine.DrawTexture(charRight, charLocation);
+        Engine.DrawTexture(mainCharacter.getCharTexture(), mainCharacter.getLocation());
         //Engine.DrawTexture(Tplat1, plat1);
         //Engine.DrawTexture(Tplat1, plat2);
         //Engine.DrawTexture(Tplat1, plat3);
@@ -116,7 +116,18 @@ class Game
 
         makePlatforms();
         //charActions();
-        //mainCharacter.respondToKey(Engine.GetKeyHeld());
+        if(Engine.GetKeyHeld(Key.A))
+        {
+            mainCharacter.respondToKey("A");
+        }
+        if(Engine.GetKeyHeld(Key.D))
+        {
+            mainCharacter.respondToKey("D");
+        }
+        if(Engine.GetKeyHeld(Key.Space))
+        {
+            mainCharacter.respondToKey("Space");
+        }
         jumping();
         bulletStuff();
         //}
@@ -156,7 +167,7 @@ class Game
 
     public void jumping()
     {
-        if (jump || hitting(charLocation, platforms))
+        if (jump || hitting(mainCharacter.getLocation(), platforms))
         {
             jump = true;
             if (count < 25 && jump == true)
@@ -164,15 +175,15 @@ class Game
                 score++;
                 count++;
                 double x;
-                if (hitting(charLocation, trampolines))
+                if (hitting(mainCharacter.getLocation(), trampolines))
                 {
-                    x = charLocation.Y - 20;
+                    x = mainCharacter.getLocation().Y - 20;
                 }
                 else
                 {
-                    x = charLocation.Y - 5;
+                    x = mainCharacter.getLocation().Y - 5;
                 }
-                charLocation.Y = (float)x;
+                mainCharacter.newYPos((float)x);
                 System.Threading.Thread.Sleep(10);
             }
             else
@@ -182,18 +193,18 @@ class Game
                 //
             }
         }
-        if (charLocation.Y < 100)
+        if (mainCharacter.getLocation().Y < 100)
         {
             //if(downCount < 25)
             //{
             movePlatsDown();
             if (jump)
             {
-                charLocation.Y += 5;
+                mainCharacter.setYLoc(5);
             }
             else
             {
-                charLocation.Y += 15;
+                mainCharacter.setYLoc(15);
             }
             downCount++;
             movingDown = true;
@@ -205,7 +216,7 @@ class Game
         }
     }
 
-    public void charActions()
+    /*public void charActions()
     {
 
         if (Engine.GetKeyHeld(Key.A)) // && charLocation.X > 0)
@@ -246,7 +257,7 @@ class Game
             temp.X = temp.X + 15;
             bullets.Add(temp);
         }
-    }
+    }*/
 
     public void breakPlatform()
     {
@@ -254,7 +265,7 @@ class Game
         for (int i = 0; i < brokenPlatforms.Count; i++)
         {
             Vector2 platform = (Vector2)platforms[i];
-            if ((Math.Abs(charLocation.X - platform.X) <= 40 && Math.Abs(charLocation.Y - platform.Y) <= 29) && random.Next(0, 100) > 80)
+            if ((Math.Abs(mainCharacter.getLocation().X - platform.X) <= 40 && Math.Abs(mainCharacter.getLocation().Y - platform.Y) <= 29) && random.Next(0, 100) > 80)
             {
                 brokenPlatforms.RemoveAt(i);
                 return;
