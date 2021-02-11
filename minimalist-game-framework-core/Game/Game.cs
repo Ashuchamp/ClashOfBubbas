@@ -50,18 +50,22 @@ class Game
     //        }
     //    }
 
+    private ScoreBoard sb;
     private int height;
     private int score;
     private int count;
     private Boolean jump;
     private Boolean compiled;
     private Boolean movingDown;
+    private Boolean gameOver;
+    private Boolean alreadyUpdatedScores;
     private int downCount;
     private int lastPlatY;
     public Game()
     {
         lastPlatY = 470;
         height = 470;
+        sb = new ScoreBoard();
     }
 
     Character mainCharacter = new Character();
@@ -81,6 +85,17 @@ class Game
         {
             mainCharacter.setYLoc(5);
             height -= 5;
+        }
+
+        if(mainCharacter.getLocation().Y > Resolution.Y)
+        {
+            gameOver = true;
+        }
+
+        if(gameOver && !alreadyUpdatedScores)
+        {
+            sb.modifyScoreBoard(score);
+            alreadyUpdatedScores = true;
         }
         //charLocation.Y += 5;
 
