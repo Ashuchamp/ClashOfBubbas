@@ -126,10 +126,10 @@ class Game
         }
         if(Engine.GetKeyHeld(Key.Space))
         {
-            mainCharacter.respondToKey("Space");
+            bullets.Add(mainCharacter.shoot());
         }
         jumping();
-        bulletStuff();
+        shootingBullet();
         //}
 
         
@@ -137,7 +137,7 @@ class Game
 
     }
 
-    public void bulletStuff()
+    public void shootingBullet()
     {
         foreach (Vector2 bullet in bullets)
         {
