@@ -183,7 +183,7 @@ class Game
             {
                 count++;
                 double x;
-                if (hitting(mainCharacter.getLocation(), trampolines))
+                if (hittingTramp(mainCharacter.getLocation(), trampolines))
                 {
                     x = mainCharacter.getLocation().Y - 20;
                     height += 20;
@@ -396,7 +396,7 @@ class Game
     {
         foreach (Platform platform in platforms)
         {
-            if (Math.Abs(charLocation.X - platform.getVector().X) <= 40 && Math.Abs(charLocation.Y - platform.getVector().Y) <= 29)
+            if (Math.Abs(charLocation.X - platform.getVector().X) <= 30 && charLocation.Y - platform.getVector().Y <= -30 && charLocation.Y - platform.getVector().Y >= -40)
             {
                 return true;
             }
@@ -405,7 +405,7 @@ class Game
     }
 
     //still temporarily needed for trampolines
-    public Boolean hitting(Vector2 charLocation, ArrayList platforms)
+    public Boolean hittingTramp(Vector2 charLocation, ArrayList platforms)
     {
         foreach (Vector2 platform in platforms)
         {
