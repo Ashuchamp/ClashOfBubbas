@@ -25,7 +25,7 @@ class Game
     List<Platform> platforms = new List<Platform>();
     ArrayList trampolines = new ArrayList();
     ArrayList bullets = new ArrayList();
-    ArrayList enemies = new ArrayList();
+    List<Enemy> enemies = new List<Enemy>();
     ArrayList brokenPlatforms = new ArrayList();
     Vector2 bck = new Vector2(0, 0);
 
@@ -111,9 +111,9 @@ class Game
         {
             Engine.DrawTexture(customPlatT, plat.getVector());
         }
-        foreach (Vector2 enemy in enemies)
+        foreach (Enemy enemy in enemies)
         {
-            Engine.DrawTexture(enemyPic, enemy);
+            Engine.DrawTexture(enemyPic, enemy.getLocation());
         }
         foreach(Vector2 tramp in trampolines)
         {
@@ -316,7 +316,7 @@ class Game
                 }
                 if (enemies.Count > 0)
                 {
-                    currentEnemy = (Vector2)enemies[j];
+                    currentEnemy = (Vector2)enemies[j].getLocation();
                 }
                 //if (enemies.Count > 0 && bullets.Count > 0)
                 // {
@@ -344,9 +344,11 @@ class Game
 
         for (int i = 0; i < enemies.Count; i++)
         {
-            Vector2 temp = (Vector2)enemies[i];
+            Vector2 temp = (Vector2)enemies[i].getLocation();
             temp.Y = temp.Y + 10;
-            enemies[i] = temp;
+            Enemy newEnemy = new Enemy();
+            newEnemy.setLocation(temp);
+            enemies[i] = newEnemy;
         }
 
         for (int i = 0; i < trampolines.Count; i++)
@@ -377,7 +379,9 @@ class Game
             if (enemyProb < 20)
             {
                 Vector2 enemyTemp = new Vector2(newX, newY - 40);
-                enemies.Add(enemyTemp);
+                Enemy temp = new Enemy();
+                temp.setLocation(enemyTemp);
+                enemies.Add(temp);
             }
 
             if(trampolineProb < 10)
