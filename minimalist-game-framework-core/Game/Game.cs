@@ -470,6 +470,7 @@ class Game
             {
                 //charHitEnemy();
                 death = true;
+                jump = false;
             }
         }
         //return false;
