@@ -74,10 +74,12 @@ class Character
         {
             charLocation.Y = charLocation.Y + 5;
         }
+
+    */
         if (keyName == "W")
         {
             charLocation.Y = charLocation.Y - 10;
-        }*/
+        }
     }
     public Vector2 shoot()
     {

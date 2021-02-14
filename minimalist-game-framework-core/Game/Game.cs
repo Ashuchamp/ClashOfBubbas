@@ -29,6 +29,8 @@ class Game
     ArrayList brokenPlatforms = new ArrayList();
     Vector2 bck = new Vector2(0, 0);
 
+    Boolean death = false;
+
     Vector2 plat1 = new Vector2(100, 300);
 
     Vector2 plat2 = new Vector2(200, 90);
@@ -68,6 +70,24 @@ class Game
 
     public void Update()
     {
+
+        
+        /*if (death)
+        {
+            if (death)
+            {
+                double x;
+                
+                
+                    x = mainCharacter.getLocation().Y - 5;
+                    height += 5;
+                
+                mainCharacter.newYPos((float)x);
+                System.Threading.Thread.Sleep(10);
+            }
+            return;
+        }
+        */
         if (height > score)
         {
             score = height;
@@ -82,6 +102,7 @@ class Game
             mainCharacter.setYLoc(5);
             height -= 5;
         }
+        charHittingEnemy();
         //charLocation.Y += 5;
 
         Engine.DrawTexture(background, bck);
@@ -90,7 +111,7 @@ class Game
         //Engine.DrawTexture(Tplat1, plat2);
         //Engine.DrawTexture(Tplat1, plat3);
 
-        if (!compiled)
+        if (!compiled && !death)
         {
             lastPlatY = 470;
             platforms.Add(new Platform(new Vector2(140, 465)));
@@ -98,7 +119,7 @@ class Game
             {
 
                 //int enemyProb = random.Next(0, 100);
-                lastPlatY = random.Next(lastPlatY - 125, lastPlatY - 50);
+                lastPlatY = random.Next(lastPlatY - 115, lastPlatY - 50);
                 Platform temp = new Platform(new Vector2(random.Next(0, 280), lastPlatY));
 
                 platforms.Add(temp);
@@ -148,14 +169,17 @@ class Game
 
     public void shootingBullet()
     {
-        foreach (Vector2 bullet in bullets)
+        if (!death)
         {
-            Engine.DrawTexture(bulletPic, bullet);
-        }
-        moveBulletUp();
-        if (bullets.Count > 0 && enemies.Count > 0)
-        {
-            checkEnemyDead();
+            foreach (Vector2 bullet in bullets)
+            {
+                Engine.DrawTexture(bulletPic, bullet);
+            }
+            moveBulletUp();
+            if (bullets.Count > 0 && enemies.Count > 0)
+            {
+                checkEnemyDead();
+            }
         }
     }
 
@@ -176,53 +200,56 @@ class Game
 
     public void jumping()
     {
-        if (jump || hitting(mainCharacter.getLocation(), platforms))
+        if (!death)
         {
-            jump = true;
-            if (count < 25 && jump == true)
+            if (jump || hitting(mainCharacter.getLocation(), platforms))
             {
-                count++;
-                double x;
-                if (hittingTramp(mainCharacter.getLocation(), trampolines))
+                jump = true;
+                if (count < 25 && jump == true)
                 {
-                    x = mainCharacter.getLocation().Y - 20;
-                    height += 20;
+                    count++;
+                    double x;
+                    if (hittingTramp(mainCharacter.getLocation(), trampolines))
+                    {
+                        x = mainCharacter.getLocation().Y - 20;
+                        height += 20;
+                    }
+                    else
+                    {
+                        x = mainCharacter.getLocation().Y - 5;
+                        height += 5;
+                    }
+                    mainCharacter.newYPos((float)x);
+                    System.Threading.Thread.Sleep(10);
                 }
                 else
                 {
-                    x = mainCharacter.getLocation().Y - 5;
-                    height += 5;
+                    jump = false;
+                    count = 0;
+                    //
                 }
-                mainCharacter.newYPos((float)x);
-                System.Threading.Thread.Sleep(10);
+            }
+            if (mainCharacter.getLocation().Y < 100)
+            {
+                //if(downCount < 25)
+                //{
+                movePlatsDown();
+                if (jump)
+                {
+                    mainCharacter.setYLoc(5);
+                }
+                else
+                {
+                    mainCharacter.setYLoc(15);
+                }
+                downCount++;
+                movingDown = true;
             }
             else
             {
-                jump = false;
-                count = 0;
-                //
+                movingDown = false;
+                downCount = 0;
             }
-        }
-        if (mainCharacter.getLocation().Y < 100)
-        {
-            //if(downCount < 25)
-            //{
-            movePlatsDown();
-            if (jump)
-            {
-                mainCharacter.setYLoc(5);
-            }
-            else
-            {
-                mainCharacter.setYLoc(15);
-            }
-            downCount++;
-            movingDown = true;
-        }
-        else
-        {
-            movingDown = false;
-            downCount = 0;
         }
     }
 
@@ -304,30 +331,32 @@ class Game
 
     public void checkEnemyDead()
     {
-        for (int i = 0; i < bullets.Count; i++)
-        {
-            for (int j = 0; j < enemies.Count; j++)
+        if (!death) {
+            for (int i = 0; i < bullets.Count; i++)
             {
-                Vector2 currentBullet = new Vector2();
-                Vector2 currentEnemy = new Vector2();
-                if (bullets.Count > 0)
+                for (int j = 0; j < enemies.Count; j++)
                 {
-                    currentBullet = (Vector2)bullets[i];
+                    Vector2 currentBullet = new Vector2();
+                    Vector2 currentEnemy = new Vector2();
+                    if (bullets.Count > 0)
+                    {
+                        currentBullet = (Vector2)bullets[i];
+                    }
+                    if (enemies.Count > 0)
+                    {
+                        currentEnemy = (Vector2)enemies[j].getLocation();
+                    }
+                    //if (enemies.Count > 0 && bullets.Count > 0)
+                    // {
+                    if ((enemies.Count > 0 && bullets.Count > 0) && (currentBullet.Y - currentEnemy.Y < 40 && currentBullet.X - currentEnemy.X < 40 && currentEnemy.X - currentBullet.X > -9))
+                    {
+                        bullets.RemoveAt(i);
+                        i--;
+                        enemies.RemoveAt(j);
+                        j--;
+                    }
+                    // }
                 }
-                if (enemies.Count > 0)
-                {
-                    currentEnemy = (Vector2)enemies[j].getLocation();
-                }
-                //if (enemies.Count > 0 && bullets.Count > 0)
-                // {
-                if ((enemies.Count > 0 && bullets.Count > 0) && (currentBullet.Y - currentEnemy.Y < 40 && currentBullet.X - currentEnemy.X < 40 && currentEnemy.X - currentBullet.X > -9))
-                {
-                    bullets.RemoveAt(i);
-                    i--;
-                    enemies.RemoveAt(j);
-                    j--;
-                }
-                // }
             }
         }
     }
@@ -394,11 +423,15 @@ class Game
 
     public Boolean hitting(Vector2 charLocation, List<Platform> platforms)
     {
-        foreach (Platform platform in platforms)
+        if (!death)
         {
-            if (Math.Abs(charLocation.X - platform.getVector().X) <= 30 && charLocation.Y - platform.getVector().Y <= -30 && charLocation.Y - platform.getVector().Y >= -40)
+
+            foreach (Platform platform in platforms)
             {
-                return true;
+                if (Math.Abs(charLocation.X - platform.getVector().X) <= 40 && charLocation.Y - platform.getVector().Y <= -30 && charLocation.Y - platform.getVector().Y >= -40)
+                {
+                    return true;
+                }
             }
         }
         return false;
@@ -407,15 +440,58 @@ class Game
     //still temporarily needed for trampolines
     public Boolean hittingTramp(Vector2 charLocation, ArrayList platforms)
     {
-        foreach (Vector2 platform in platforms)
+        if (!death)
         {
-            if (Math.Abs(charLocation.X - platform.X) <= 40 && Math.Abs(charLocation.Y - platform.Y) <= 29)
             {
-                return true;
+                foreach (Vector2 platform in platforms)
+                {
+                    if (Math.Abs(charLocation.X - platform.X) <= 40 && Math.Abs(charLocation.Y - platform.Y) <= 29)
+                    {
+                        return true;
+                    }
+                }
             }
         }
 
         return false;
     }
+
+    public void charHittingEnemy()
+    {
+        int charX = (int)mainCharacter.getLocation().X;
+        int charY = (int)mainCharacter.getLocation().Y;
+
+        foreach (Enemy enemy in enemies)
+        {
+            int enemyX = (int)enemy.getLocation().X;
+            int enemyY = (int)enemy.getLocation().Y;
+
+            if (Math.Abs(enemyX - charX) < 40 && Math.Abs(enemyY - charY) < 40)
+            {
+                //charHitEnemy();
+                death = true;
+            }
+        }
+        //return false;
+
+    }
+
+    public void charHitEnemy()
+    {
+        while(mainCharacter.getLocation().Y < 490)
+        {
+            //int charCurrentX = (int)mainCharacter.getLocation().X;
+            int charCurrentY = (int)mainCharacter.getLocation().Y;
+
+            mainCharacter.setYLoc(charCurrentY - 10);
+            
+
+
+            break;
+
+        }
+    }
+
+    
 
 }
