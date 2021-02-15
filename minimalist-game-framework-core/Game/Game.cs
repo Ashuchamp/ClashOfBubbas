@@ -405,33 +405,44 @@ class Game
         {
             temp1 = platforms[platforms.Count - 1].getVector();
             int yLoc = (int)temp1.Y;
+            int xLoc = (int)temp1.X;
             int newY = random.Next(yLoc - 125, yLoc - 50);
-            int newX = random.Next(0, 280);
+            int tempX = random.Next(0, 280);
+            while(Math.Abs(xLoc - tempX) < 30)
+            {
+                tempX = random.Next(0, 280);
+            }
+            int newX = tempX;
             platforms.Add(new Platform(new Vector2(newX, newY)));
             platforms.RemoveAt(0);
 
             int enemyProb = random.Next(0, 100);
             int trampolineProb = random.Next(0, 100);
+            Boolean trampPresent = false;
 
-            if (enemyProb < 20)
+            if (trampolineProb < 20)
+            {
+                Vector2 trampolineTemp = new Vector2(newX, newY - 40);
+                trampolines.Add(trampolineTemp);
+                trampPresent = true;
+            }
+
+            if (enemyProb < 20 && yLoc - newY > 70 && !trampPresent && Math.Abs(xLoc - newX) < 60)//  && yLoc - newY < -40)// && !trampPresent)
             {
                 Vector2 enemyTemp = new Vector2(newX, newY - 40);
                 Enemy temp = new Enemy();
                 temp.setLocation(enemyTemp);
                 enemies.Add(temp);
             }
+            trampPresent = false;
 
-            if(trampolineProb < 10)
-            {
-                Vector2 trampolineTemp = new Vector2(newX, newY - 40);
-                trampolines.Add(trampolineTemp);
-            }
+            
         }
     }
 
     public Boolean hitting(Vector2 charLocation, List<Platform> platforms)
     {
-        if (!death)
+        if (!death || !trampJump)
         {
 
             foreach (Platform platform in platforms)
@@ -469,16 +480,19 @@ class Game
         int charX = (int)mainCharacter.getLocation().X;
         int charY = (int)mainCharacter.getLocation().Y;
 
-        foreach (Enemy enemy in enemies)
+        if (!trampJump)
         {
-            int enemyX = (int)enemy.getLocation().X;
-            int enemyY = (int)enemy.getLocation().Y;
-
-            if (Math.Abs(enemyX - charX) < 40 && Math.Abs(enemyY - charY) < 40)
+            foreach (Enemy enemy in enemies)
             {
-                //charHitEnemy();
-                death = true;
-                jump = false;
+                int enemyX = (int)enemy.getLocation().X;
+                int enemyY = (int)enemy.getLocation().Y;
+
+                if (Math.Abs(enemyX - charX) < 40 && Math.Abs(enemyY - charY) < 40)
+                {
+                    //charHitEnemy();
+                    death = true;
+                    jump = false;
+                }
             }
         }
         //return false;
