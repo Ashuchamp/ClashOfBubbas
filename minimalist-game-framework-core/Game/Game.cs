@@ -57,6 +57,8 @@ class Game
     private int count;
     private Boolean jump;
     private Boolean compiled;
+
+    private Boolean trampJump = false;
     private Boolean movingDown;
     private int downCount;
     private int lastPlatY;
@@ -209,10 +211,16 @@ class Game
                 {
                     count++;
                     double x;
-                    if (hittingTramp(mainCharacter.getLocation(), trampolines))
+                    if (hittingTramp(mainCharacter.getLocation(), trampolines) || trampJump)
                     {
-                        x = mainCharacter.getLocation().Y - 20;
-                        height += 20;
+                        x = mainCharacter.getLocation().Y - 10;
+                        height += 10;
+                        trampJump = true;
+                        if (count == 25)
+                        {
+                            trampJump = false;
+                        }
+                        
                     }
                     else
                     {
