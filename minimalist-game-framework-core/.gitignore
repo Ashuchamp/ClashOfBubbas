@@ -1,2 +1,4 @@
 .vs/
-Builds/
+.Builds/Temp/Debug/Game.csproj.CoreCompileInputs.cache
+.Builds/Temp/Debug/Game.csprojAssemblyReference.cache
+
