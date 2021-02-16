@@ -69,25 +69,26 @@ class Character
                 charLocation.X = 0;
             }
             charLocation.X = charLocation.X + 5;
-            Console.WriteLine("D pressed");
         }
         /*if (keyName == "S")
         {
             charLocation.Y = charLocation.Y + 5;
         }
+
+    */
         if (keyName == "W")
         {
             charLocation.Y = charLocation.Y - 10;
-        }*/
-        if (keyName == "Space")
-        {
-            charTexture = Engine.LoadTexture("shoot.png");
-            Vector2 temp = new Vector2();
-            temp = charLocation;
-            temp.Y = temp.Y - 2;
-            temp.X = temp.X + 15;
-            //bullets.Add(temp);
         }
+    }
+    public Vector2 shoot()
+    {
+        charTexture = Engine.LoadTexture("shoot.png");
+        Vector2 temp = new Vector2();
+        temp = charLocation;
+        temp.Y = temp.Y - 2;
+        temp.X = temp.X + 15;
+        return temp;
     }
 
     public void addPowerups(Powerup powerup)
@@ -144,68 +145,4 @@ class Character
         //powerups.RemoveAt(0);
         powerupActivated = false;
     }
-
-    /*public void jumping()
-    {
-        if (jump || hitting(charLocation, platforms))
-        {
-            jump = true;
-            if (count < 25 && jump == true)
-            {
-                count++;
-                double x;
-                if (hitting(charLocation, trampolines))
-                {
-                    x = charLocation.Y - 20;
-                    height += 20;
-                }
-                else
-                {
-                    x = charLocation.Y - 5;
-                    height += 5;
-                }
-                charLocation.Y = (float)x;
-                System.Threading.Thread.Sleep(10);
-            }
-            else
-            {
-                jump = false;
-                count = 0;
-                //
-            }
-        }
-        if (charLocation.Y < 100)
-        {
-            //if(downCount < 25)
-            //{
-            movePlatsDown();
-            if (jump)
-            {
-                charLocation.Y += 5;
-            }
-            else
-            {
-                charLocation.Y += 15;
-            }
-            downCount++;
-            movingDown = true;
-        }
-        else
-        {
-            movingDown = false;
-            downCount = 0;
-        }
-    }
-
-    public Boolean hitting(Vector2 charLocation, ArrayList platforms)
-    {
-        foreach (Vector2 platform in platforms)
-        {
-            if (Math.Abs(charLocation.X - platform.X) <= 40 && Math.Abs(charLocation.Y - platform.Y) <= 29)
-            {
-                return true;
-            }
-        }
-        return false;
-    }*/
 }
