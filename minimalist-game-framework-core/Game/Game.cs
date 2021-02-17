@@ -14,6 +14,7 @@ class Game
     readonly Texture bulletPic = Engine.LoadTexture("bullet.png");
     readonly Texture enemyPic = Engine.LoadTexture("enemy.png");
     readonly Texture trampolineTex = Engine.LoadTexture("trampoline.png");
+    readonly Texture shieldTex = Engine.LoadTexture("shield.png");
     readonly Font font = Engine.LoadFont("FiraCode-Medium.ttf", pointSize: 20);
     //readonly Texture Tplat2 = Engine.LoadTexture("plat.png");
     //readonly Texture Tplat3 = Engine.LoadTexture("plat.png");
@@ -25,6 +26,7 @@ class Game
     List<Platform> platforms = new List<Platform>();
     ArrayList trampolines = new ArrayList();
     ArrayList bullets = new ArrayList();
+    ArrayList shields = new ArrayList();
     List<Enemy> enemies = new List<Enemy>();
     ArrayList brokenPlatforms = new ArrayList();
     Vector2 bck = new Vector2(0, 0);
@@ -57,6 +59,7 @@ class Game
     private int count;
     private Boolean jump;
     private Boolean compiled;
+    private Boolean shieldOn;
 
     private Boolean trampJump = false;
     private Boolean movingDown;
@@ -105,6 +108,7 @@ class Game
             height -= 5;
         }
         charHittingEnemy();
+        charHittingShield();
         //charLocation.Y += 5;
 
         Engine.DrawTexture(background, bck);
@@ -141,6 +145,10 @@ class Game
         foreach(Vector2 tramp in trampolines)
         {
             Engine.DrawTexture(trampolineTex, tramp);
+        }
+        foreach(Vector2 shield in shields)
+        {
+            Engine.DrawTexture(shieldTex, shield);
         }
         Engine.DrawString(score.ToString(), scoreVec, Color.Purple, font);
 
@@ -394,6 +402,13 @@ class Game
             temp.Y = temp.Y + 10;
             trampolines[i] = temp;
         }
+
+        for (int i = 0; i < shields.Count; i++)
+        {
+            Vector2 temp = (Vector2)shields[i];
+            temp.Y = temp.Y + 10;
+            shields[i] = temp;
+        }
     }
 
     public void makePlatforms()
@@ -418,7 +433,9 @@ class Game
 
             int enemyProb = random.Next(0, 100);
             int trampolineProb = random.Next(0, 100);
+            int shieldProb = random.Next(0, 100);
             Boolean trampPresent = false;
+            Boolean enemyPresent = false;
 
             if (trampolineProb < 20)
             {
@@ -433,8 +450,17 @@ class Game
                 Enemy temp = new Enemy();
                 temp.setLocation(enemyTemp);
                 enemies.Add(temp);
+                enemyPresent = true;
             }
+
+            if (shieldProb < 20 && !trampPresent && !enemyPresent)
+            {
+                Vector2 shieldTemp = new Vector2(newX, newY - 40);
+                shields.Add(shieldTemp);
+            }
+
             trampPresent = false;
+            enemyPresent = false;
 
             
         }
@@ -487,11 +513,18 @@ class Game
                 int enemyX = (int)enemy.getLocation().X;
                 int enemyY = (int)enemy.getLocation().Y;
 
-                if (Math.Abs(enemyX - charX) < 40 && Math.Abs(enemyY - charY) < 40)
+                if (Math.Abs(enemyX - charX) < 20 && Math.Abs(enemyY - charY) < 20)
                 {
-                    //charHitEnemy();
-                    death = true;
-                    jump = false;
+                    if (!shieldOn)
+                    {
+                        charHitEnemy();
+                        death = true;
+                        jump = false;
+                    }
+                    else
+                    {
+                        shieldOn = false;
+                    }
                 }
             }
         }
@@ -501,13 +534,13 @@ class Game
 
     public void charHitEnemy()
     {
-        while(mainCharacter.getLocation().Y < 490)
+        while (mainCharacter.getLocation().Y < Resolution.Y)
         {
             //int charCurrentX = (int)mainCharacter.getLocation().X;
             int charCurrentY = (int)mainCharacter.getLocation().Y;
 
             mainCharacter.setYLoc(charCurrentY - 10);
-            
+
 
 
             break;
@@ -515,6 +548,23 @@ class Game
         }
     }
 
-    
-
+    public void charHittingShield()
+    {
+        int charX = (int)mainCharacter.getLocation().X;
+        int charY = (int)mainCharacter.getLocation().Y;
+        if (!death || !trampJump)
+        {
+            Vector2 currentShield;
+            for(int i = 0; i < shields.Count; i++)
+            {
+                currentShield = (Vector2)shields[i];
+                if (Math.Abs(charX - currentShield.X) <= 40 && charY - currentShield.Y <= -30 && charY - currentShield.Y >= -40 && !shieldOn)
+                {
+                    shieldOn = true;
+                    shields.RemoveAt(i);
+                    i--;
+                }
+            }
+        }
+    }
 }
