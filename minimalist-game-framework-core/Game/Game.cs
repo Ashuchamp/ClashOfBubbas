@@ -65,6 +65,8 @@ class Game
     private Boolean movingDown;
     private int downCount;
     private int lastPlatY;
+    private Boolean shieldCooldown;
+    private int shieldCoolTimer;
     public Game()
     {
         lastPlatY = 470;
@@ -110,6 +112,19 @@ class Game
         charHittingEnemy();
         charHittingShield();
         //charLocation.Y += 5;
+
+        if(shieldCooldown)
+        {
+            if(shieldCoolTimer >= 250)
+            {
+                shieldCoolTimer = 0;
+                shieldCooldown = false;
+            }
+            else
+            {
+                shieldCoolTimer++;
+            }
+        }
 
         Engine.DrawTexture(background, bck);
         Engine.DrawTexture(mainCharacter.getCharTexture(), mainCharacter.getLocation());
@@ -515,7 +530,7 @@ class Game
 
                 if (Math.Abs(enemyX - charX) < 20 && Math.Abs(enemyY - charY) < 20)
                 {
-                    if (!shieldOn)
+                    if (!shieldOn && !shieldCooldown)
                     {
                         charHitEnemy();
                         death = true;
@@ -524,6 +539,7 @@ class Game
                     else
                     {
                         shieldOn = false;
+                        shieldCooldown = true;
                     }
                 }
             }
