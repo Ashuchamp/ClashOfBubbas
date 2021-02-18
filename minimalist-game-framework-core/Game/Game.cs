@@ -438,6 +438,13 @@ class Game
             trampolines[i] = temp;
         }
 
+        for (int i = 0; i < flyingCaps.Count; i++)
+        {
+            Vector2 temp = (Vector2)flyingCaps[i];
+            temp.Y = temp.Y + 10;
+            flyingCaps[i] = temp;
+        }
+
         for (int i = 0; i < shields.Count; i++)
         {
             Vector2 temp = (Vector2)shields[i];
@@ -481,7 +488,7 @@ class Game
                 trampPresent = true;
             }
 
-            if (capProb < 100)
+            if (capProb < 10)
             {
                 Vector2 capTemp = new Vector2(newX, newY - 40);
                 flyingCaps.Add(capTemp);
