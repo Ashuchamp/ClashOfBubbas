@@ -13,6 +13,7 @@ class Game
     readonly Texture customPlatT = Engine.LoadTexture("plat1.png");
     readonly Texture bulletPic = Engine.LoadTexture("bullet.png");
     readonly Texture enemyPic = Engine.LoadTexture("enemy.png");
+    readonly Texture capText = Engine.LoadTexture("flyingCap.png");
     readonly Texture trampolineTex = Engine.LoadTexture("trampoline.png");
     readonly Texture shieldTex = Engine.LoadTexture("shield.png");
     readonly Font font = Engine.LoadFont("FiraCode-Medium.ttf", pointSize: 20);
@@ -25,6 +26,7 @@ class Game
     //Vector2 platLocation = new Vector2(100, 300);
     List<Platform> platforms = new List<Platform>();
     ArrayList trampolines = new ArrayList();
+    ArrayList flyingCaps = new ArrayList();
     ArrayList bullets = new ArrayList();
     ArrayList shields = new ArrayList();
     List<Enemy> enemies = new List<Enemy>();
@@ -62,6 +64,7 @@ class Game
     private Boolean shieldOn;
 
     private Boolean trampJump = false;
+    private Boolean flying = false;
     private Boolean movingDown;
     private int downCount;
     private int lastPlatY;
@@ -118,7 +121,7 @@ class Game
             if(shieldCoolTimer >= 250)
             {
                 shieldCoolTimer = 0;
-                shieldCooldown = false;
+                shieldCooldown = false; //need to add different texture!!!!!!!!!!!!!-----------------------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             }
             else
             {
@@ -161,7 +164,11 @@ class Game
         {
             Engine.DrawTexture(trampolineTex, tramp);
         }
-        foreach(Vector2 shield in shields)
+        foreach (Vector2 cap in flyingCaps)
+        {
+            Engine.DrawTexture(capText, cap);
+        }
+        foreach (Vector2 shield in shields)
         {
             Engine.DrawTexture(shieldTex, shield);
         }
@@ -244,7 +251,20 @@ class Game
                             trampJump = false;
                         }
                         
+                    } /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                    if (hittingCap(mainCharacter.getLocation(), flyingCaps) || trampJump)
+                    {
+                        x = mainCharacter.getLocation().Y - 10;
+                        height += 10;
+                        flying = true;
+                        if (count == 75)
+                        {
+                            flying = false;
+                        }
+
                     }
+
                     else
                     {
                         x = mainCharacter.getLocation().Y - 5;
@@ -449,8 +469,10 @@ class Game
             int enemyProb = random.Next(0, 100);
             int trampolineProb = random.Next(0, 100);
             int shieldProb = random.Next(0, 100);
+            int capProb = random.Next(0, 100);
             Boolean trampPresent = false;
             Boolean enemyPresent = false;
+            Boolean capPresent = false;
 
             if (trampolineProb < 20)
             {
@@ -459,7 +481,14 @@ class Game
                 trampPresent = true;
             }
 
-            if (enemyProb < 20 && yLoc - newY > 70 && !trampPresent && Math.Abs(xLoc - newX) < 60)//  && yLoc - newY < -40)// && !trampPresent)
+            if (capProb < 100)
+            {
+                Vector2 capTemp = new Vector2(newX, newY - 40);
+                flyingCaps.Add(capTemp);
+                capPresent = true;
+            }
+
+            if (enemyProb < 20 && yLoc - newY > 70 && !trampPresent && Math.Abs(xLoc - newX) < 60 && !capPresent)//  && yLoc - newY < -40)// && !trampPresent)
             {
                 Vector2 enemyTemp = new Vector2(newX, newY - 40);
                 Enemy temp = new Enemy();
@@ -468,7 +497,7 @@ class Game
                 enemyPresent = true;
             }
 
-            if (shieldProb < 20 && !trampPresent && !enemyPresent)
+            if (shieldProb < 20 && !trampPresent && !enemyPresent && !capPresent)
             {
                 Vector2 shieldTemp = new Vector2(newX, newY - 40);
                 shields.Add(shieldTemp);
@@ -476,6 +505,7 @@ class Game
 
             trampPresent = false;
             enemyPresent = false;
+            capPresent = false;
 
             
         }
@@ -498,12 +528,30 @@ class Game
     }
 
     //still temporarily needed for trampolines
-    public Boolean hittingTramp(Vector2 charLocation, ArrayList platforms)
+    public Boolean hittingTramp(Vector2 charLocation, ArrayList tramps)
     {
         if (!death)
         {
             {
-                foreach (Vector2 platform in platforms)
+                foreach (Vector2 platform in tramps)
+                {
+                    if (Math.Abs(charLocation.X - platform.X) <= 40 && Math.Abs(charLocation.Y - platform.Y) <= 29)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public Boolean hittingCap(Vector2 charLocation, ArrayList caps)
+    {
+        if (!death)
+        {
+            {
+                foreach (Vector2 platform in caps)
                 {
                     if (Math.Abs(charLocation.X - platform.X) <= 40 && Math.Abs(charLocation.Y - platform.Y) <= 29)
                     {
