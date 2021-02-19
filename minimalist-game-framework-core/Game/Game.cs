@@ -236,31 +236,35 @@ class Game
         {
             if (jump || hitting(mainCharacter.getLocation(), platforms))
             {
-                jump = true;
+                  jump = true;
                 if (count < 25 && jump == true)
                 {
                     count++;
                     double x;
-                    if (hittingTramp(mainCharacter.getLocation(), trampolines) || trampJump)
+                    if ((hittingTramp(mainCharacter.getLocation(), trampolines) || trampJump) )
                     {
                         x = mainCharacter.getLocation().Y - 10;
                         height += 10;
                         trampJump = true;
+                        Console.WriteLine("tramp" + count);
                         if (count == 25)
                         {
                             trampJump = false;
+                            count = 0;
                         }
                         
                     } /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                    if (hittingCap(mainCharacter.getLocation(), flyingCaps) || trampJump)
+                    if (hittingCap(mainCharacter.getLocation(), flyingCaps) || flying)
                     {
                         x = mainCharacter.getLocation().Y - 10;
                         height += 10;
                         flying = true;
-                        if (count == 75)
+                        Console.WriteLine("flying" + count)
+;                        if (count >= 75)
                         {
                             flying = false;
+                            count = 0;
                         }
 
                     }
@@ -520,7 +524,7 @@ class Game
 
     public Boolean hitting(Vector2 charLocation, List<Platform> platforms)
     {
-        if (!death || !trampJump)
+        if (!death || !trampJump || !flying)
         {
 
             foreach (Platform platform in platforms)
@@ -540,13 +544,13 @@ class Game
         if (!death)
         {
             {
-                foreach (Vector2 platform in tramps)
+                foreach (Vector2 tramp in tramps)
                 {
-                    if (Math.Abs(charLocation.X - platform.X) <= 40 && Math.Abs(charLocation.Y - platform.Y) <= 29)
+                    if (Math.Abs(charLocation.X - tramp.X) <= 40 && Math.Abs(charLocation.Y - tramp.Y) <= 29)
                     {
                         return true;
                     }
-                }
+                }    
             }
         }
 
@@ -558,9 +562,9 @@ class Game
         if (!death)
         {
             {
-                foreach (Vector2 platform in caps)
+                foreach (Vector2 cap in caps)
                 {
-                    if (Math.Abs(charLocation.X - platform.X) <= 40 && Math.Abs(charLocation.Y - platform.Y) <= 29)
+                    if (Math.Abs(charLocation.X - cap.X) <= 40 && Math.Abs(charLocation.Y - cap.Y) <= 29)
                     {
                         return true;
                     }
@@ -576,7 +580,7 @@ class Game
         int charX = (int)mainCharacter.getLocation().X;
         int charY = (int)mainCharacter.getLocation().Y;
 
-        if (!trampJump)
+        if (!trampJump && !flying && !death)
         {
             foreach (Enemy enemy in enemies)
             {
@@ -623,7 +627,7 @@ class Game
     {
         int charX = (int)mainCharacter.getLocation().X;
         int charY = (int)mainCharacter.getLocation().Y;
-        if (!death || !trampJump)
+        if (!death)
         {
             Vector2 currentShield;
             for(int i = 0; i < shields.Count; i++)
