@@ -17,6 +17,7 @@ class Game
     readonly Texture trampolineTex = Engine.LoadTexture("trampoline.png");
     readonly Texture shieldTex = Engine.LoadTexture("shield.png");
     readonly Font font = Engine.LoadFont("FiraCode-Medium.ttf", pointSize: 20);
+    readonly Font scoreFont = Engine.LoadFont("FiraCode-Medium.ttf", pointSize: 12);
     //readonly Texture Tplat2 = Engine.LoadTexture("plat.png");
     //readonly Texture Tplat3 = Engine.LoadTexture("plat.png");
 
@@ -47,6 +48,10 @@ class Game
     Vector2 plat3 = new Vector2(250, 30);
 
     Vector2 scoreVec = new Vector2(10, 10);
+
+    Vector2 finalScoreVec = new Vector2(70, 210);
+
+    Vector2 scoreBoardHeadVec = new Vector2(10, 225);
 
     int time = 0;
     //    public void plats()
@@ -100,6 +105,14 @@ class Game
             }
             alreadyUpdatedScores = true;
             Engine.DrawTexture(endBackground, bck);
+            Engine.DrawString(score.ToString(), finalScoreVec, Color.LightBlue, scoreFont);
+            Engine.DrawString("High Scores:", scoreBoardHeadVec, Color.LawnGreen, scoreFont);
+            Vector2 currentVec = new Vector2(scoreBoardHeadVec.X, scoreBoardHeadVec.Y + 15);
+            for (int i = 1; i <= 10; i++)
+            {
+                Engine.DrawString(i + ": " + sb.getScore(i), currentVec, Color.Yellow, scoreFont);
+                currentVec.Y += 15;
+            }
             if (Engine.GetKeyHeld(Key.P))
             {
                 reset();
