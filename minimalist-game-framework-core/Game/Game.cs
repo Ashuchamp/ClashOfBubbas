@@ -60,12 +60,14 @@ class Game
     //        }
     //    }
 
+    private ScoreBoard sb;
     private int height;
     private int score;
     private int count;
     private Boolean jump;
     private Boolean compiled;
     private Boolean shieldOn;
+    private Boolean alreadyUpdatedScores;
 
     private Boolean trampJump = false;
     private Boolean flying = false;
@@ -76,8 +78,8 @@ class Game
     private int shieldCoolTimer;
     public Game()
     {
+        sb = new ScoreBoard();
         lastPlatY = 470;
-        height = 470;
     }
 
     Character mainCharacter = new Character();
@@ -91,8 +93,13 @@ class Game
         }
         if(death)
         {
-            Engine.DrawTexture(endBackground, bck);
-            if(Engine.GetKeyHeld(Key.P))
+            if (!alreadyUpdatedScores)
+            {
+                sb.modifyScoreBoard(score);
+            }
+            alreadyUpdatedScores = true;
+            //Engine.DrawTexture(endBackground, bck);
+            if (Engine.GetKeyHeld(Key.P))
             {
                 death = false;
             }
@@ -108,6 +115,9 @@ class Game
             if(Engine.GetKeyHeld(Key.S))
             {
                 homeScreen = false;
+                height = 0;
+                score = 0;
+                alreadyUpdatedScores = false;
             }
         }
         else
@@ -445,9 +455,9 @@ class Game
                     {
                         currentEnemy = (Vector2)enemies[j].getLocation();
                     }
-                    //if (enemies.Count > 0 && bullets.Count > 0)
+                    //if (enemies.Count > 0 && bullets.Count > 0) 
                     // {
-                    if ((enemies.Count > 0 && bullets.Count > 0) && (currentBullet.Y - currentEnemy.Y < 40 && currentBullet.X - currentEnemy.X < 40 && currentEnemy.X - currentBullet.X > -9))
+                    if ((enemies.Count > 0 && bullets.Count > 0) && (currentBullet.Y - currentEnemy.Y < 40 && currentBullet.X - currentEnemy.X < 40 && currentBullet.X - currentEnemy.X > -9))
                     {
                         bullets.RemoveAt(i);
                         i--;
