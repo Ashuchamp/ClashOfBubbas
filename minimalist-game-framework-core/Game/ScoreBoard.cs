@@ -33,6 +33,7 @@ internal class ScoreBoard
     //No priority queues in C#, so array had to be used
     /**
      * Update the scoreboard with the score of the most recent game
+     * @param score: the final score of the most recent game (int)
      */
     public void modifyScoreBoard(int score)
     {
