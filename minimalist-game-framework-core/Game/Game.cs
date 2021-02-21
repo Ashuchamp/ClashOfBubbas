@@ -21,6 +21,7 @@ class Game
     //readonly Texture Tplat3 = Engine.LoadTexture("plat.png");
 
     readonly Texture background = Engine.LoadTexture("background.jpg");
+    readonly Sound deadSound = Engine.LoadSound("Cat-sound-mp3.mp3");
 
     //Vector2 charLocation = new Vector2(145, 440);
     //Vector2 platLocation = new Vector2(100, 300);
@@ -605,6 +606,8 @@ class Game
 
     public void charHitEnemy()
     {
+        //Sound sound = new Sound("Cat-sound-mp3.mp3");
+        Engine.PlaySound(deadSound, false, 0);
         while (mainCharacter.getLocation().Y < Resolution.Y)
         {
             //int charCurrentX = (int)mainCharacter.getLocation().X;
