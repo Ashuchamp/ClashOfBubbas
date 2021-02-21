@@ -8,7 +8,7 @@ class Game
     public static readonly Vector2 Resolution = new Vector2(320, 480);
 
     Texture charRight = Engine.LoadTexture("charR.png");
-    readonly Texture charLeft = Engine.LoadTexture("charL.png");
+    readonly Texture charLeft = Engine.LoadTexture("charLH.png");
     readonly Texture Tplat1 = Engine.LoadTexture("plat.png");
     readonly Texture customPlatT = Engine.LoadTexture("plat1.png");
     readonly Texture bulletPic = Engine.LoadTexture("bullet.png");
@@ -21,7 +21,7 @@ class Game
     //readonly Texture Tplat3 = Engine.LoadTexture("plat.png");
 
     readonly Texture background = Engine.LoadTexture("background.png");
-    //readonly Texture endBackground = Engine.LoadTexture("endBackground.png");
+    readonly Texture endBackground = Engine.LoadTexture("endBackground.png");
     readonly Texture homeBackground = Engine.LoadTexture("homeBackground.png");
     readonly Sound deadSound = Engine.LoadSound("Cat-sound-mp3.mp3");
 
@@ -37,6 +37,7 @@ class Game
     Vector2 bck = new Vector2(0, 0);
     Boolean death = false;
     Boolean homeScreen = true;
+    double difficulty = 1;
 
     Vector2 plat1 = new Vector2(100, 300);
 
@@ -83,14 +84,14 @@ class Game
 
     public void Update()
     {
-
+        difficulty = score * 0.0001;
         if(mainCharacter.getLocation().Y >= 480)
         {
             death = true;
         }
         if(death)
         {
-            //Engine.DrawTexture(endBackground, bck);
+            Engine.DrawTexture(endBackground, bck);
             if(Engine.GetKeyHeld(Key.P))
             {
                 death = false;
@@ -520,10 +521,10 @@ class Game
             platforms.Add(new Platform(new Vector2(newX, newY)));
             platforms.RemoveAt(0);
 
-            int enemyProb = random.Next(0, 100);
-            int trampolineProb = random.Next(0, 100);
-            int shieldProb = random.Next(0, 100);
-            int capProb = random.Next(0, 100);
+            double enemyProb = random.Next(0, 100) * difficulty;
+            double trampolineProb = random.Next(0, 100) / difficulty;
+            double shieldProb = random.Next(0, 100) / difficulty;
+            double capProb = random.Next(0, 100) / difficulty;
             Boolean trampPresent = false;
             Boolean enemyPresent = false;
             Boolean capPresent = false;
