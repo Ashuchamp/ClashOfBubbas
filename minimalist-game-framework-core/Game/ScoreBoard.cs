@@ -30,6 +30,14 @@ internal class ScoreBoard
         Console.WriteLine();
     }
 
+    /**
+     * obtain the score at the given ranking
+     * return an integer representing the score at the specified ranking, in the scores array
+     */
+     public int getScore(int rank)
+    {
+        return scores[rank - 1];
+    }
     //No priority queues in C#, so array had to be used
     /**
      * Update the scoreboard with the score of the most recent game
