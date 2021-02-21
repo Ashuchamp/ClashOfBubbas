@@ -454,7 +454,7 @@ class Game
                     {
                         currentEnemy = (Vector2)enemies[j].getLocation();
                     }
-                    //if (enemies.Count > 0 && bullets.Count > 0)
+                    //if (enemies.Count > 0 && bullets.Count > 0) 
                     // {
                     if ((enemies.Count > 0 && bullets.Count > 0) && (currentBullet.Y - currentEnemy.Y < 40 && currentBullet.X - currentEnemy.X < 40 && currentBullet.X - currentEnemy.X > -9))
                     {
