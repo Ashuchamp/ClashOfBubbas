@@ -26,6 +26,7 @@ class Game
     readonly Texture homeBackground = Engine.LoadTexture("homeBackground.png");
     readonly Sound deadSound = Engine.LoadSound("Cat-sound-mp3.mp3");
     readonly Sound shootSound = Engine.LoadSound("shoot.mp3");
+    readonly Sound jumpSound = Engine.LoadSound("jump.mp3");
 
     //Vector2 charLocation = new Vector2(145, 440);
     //Vector2 platLocation = new Vector2(100, 300);
@@ -299,6 +300,11 @@ class Game
             if ((jump || hitting(mainCharacter.getLocation(), platforms)) && !trampJump && !flying)
             {
                 jump = true;
+                if(hitting(mainCharacter.getLocation(), platforms))
+                {
+                    Engine.PlaySound(jumpSound, false, 0);
+
+                }
                 if (count < 25 && jump == true)// && !trampJump)
                 {
                     double x;
