@@ -8,7 +8,7 @@ class Game
     public static readonly Vector2 Resolution = new Vector2(320, 480);
 
     Texture charRight = Engine.LoadTexture("charR.png");
-    readonly Texture charLeft = Engine.LoadTexture("charLH.png");
+    readonly Texture charLeft = Engine.LoadTexture("charL.png");
     readonly Texture Tplat1 = Engine.LoadTexture("plat.png");
     readonly Texture customPlatT = Engine.LoadTexture("plat1.png");
     readonly Texture bulletPic = Engine.LoadTexture("bullet.png");
@@ -86,7 +86,7 @@ class Game
 
     public void Update()
     {
-        difficulty = score * 0.0001;
+        difficulty = score * 0.000001 + 1;
         if(mainCharacter.getLocation().Y >= 480)
         {
             death = true;
@@ -98,7 +98,7 @@ class Game
                 sb.modifyScoreBoard(score);
             }
             alreadyUpdatedScores = true;
-            //Engine.DrawTexture(endBackground, bck);
+            Engine.DrawTexture(endBackground, bck);
             if (Engine.GetKeyHeld(Key.P))
             {
                 death = false;
@@ -447,7 +447,7 @@ class Game
                 {
                     Vector2 currentBullet = new Vector2();
                     Vector2 currentEnemy = new Vector2();
-                    if (bullets.Count > 0)
+                    if (bullets.Count > 1)
                     {
                         currentBullet = (Vector2)bullets[i];
                     }
