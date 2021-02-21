@@ -74,7 +74,6 @@ class Game
     public Game()
     {
         lastPlatY = 470;
-        height = 470;
     }
 
     Character mainCharacter = new Character();
@@ -434,7 +433,7 @@ class Game
                     }
                     //if (enemies.Count > 0 && bullets.Count > 0)
                     // {
-                    if ((enemies.Count > 0 && bullets.Count > 0) && (currentBullet.Y - currentEnemy.Y < 40 && currentBullet.X - currentEnemy.X < 40 && currentEnemy.X - currentBullet.X > -9))
+                    if ((enemies.Count > 0 && bullets.Count > 0) && (currentBullet.Y - currentEnemy.Y < 40 && currentBullet.X - currentEnemy.X < 40 && currentBullet.X - currentEnemy.X > -9))
                     {
                         bullets.RemoveAt(i);
                         i--;
