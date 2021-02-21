@@ -20,7 +20,7 @@ class Game
     //readonly Texture Tplat2 = Engine.LoadTexture("plat.png");
     //readonly Texture Tplat3 = Engine.LoadTexture("plat.png");
 
-    readonly Texture background = Engine.LoadTexture("background.jpg");
+    readonly Texture background = Engine.LoadTexture("background.png");
     readonly Sound deadSound = Engine.LoadSound("Cat-sound-mp3.mp3");
 
     //Vector2 charLocation = new Vector2(145, 440);
@@ -235,65 +235,99 @@ class Game
     {
         if (!death)
         {
-            if (jump || hitting(mainCharacter.getLocation(), platforms))
+            if ((jump || hitting(mainCharacter.getLocation(), platforms)) && !trampJump && !flying)
             {
                 jump = true;
-                if (count < 25 && jump == true)
+                if (count < 25 && jump == true && !trampJump)
                 {
-                    count++;
                     double x;
-                    if (hittingTramp(mainCharacter.getLocation(), trampolines) || trampJump)
-                    {
-                        x = mainCharacter.getLocation().Y - 10;
-                        height += 10;
-                        trampJump = true;
-                        if (count == 25)
-                        {
-                            trampJump = false;
-                        }
-                        
-                    } /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-                    if (hittingCap(mainCharacter.getLocation(), flyingCaps) || trampJump)
-                    {
-                        x = mainCharacter.getLocation().Y - 10;
-                        height += 10;
-                        flying = true;
-                        if (count == 75)
-                        {
-                            flying = false;
-                        }
-
-                    }
-
-                    else
-                    {
-                        x = mainCharacter.getLocation().Y - 5;
-                        height += 5;
-                    }
+                    x = mainCharacter.getLocation().Y - 5;
+                    height += 5;
                     mainCharacter.newYPos((float)x);
                     System.Threading.Thread.Sleep(10);
+                    count++;
                 }
                 else
                 {
                     jump = false;
                     count = 0;
-                    //
                 }
             }
+
+            else if ((trampJump || hittingTramp(mainCharacter.getLocation(), trampolines)) && !flying)
+            {
+                Console.WriteLine("inside tramp");
+                trampJump = true;
+                if (count < 25 && trampJump == true && !jump)
+                {
+                    double x;
+                    x = mainCharacter.getLocation().Y - 10;
+                    height += 10;
+                    mainCharacter.newYPos((float)x);
+                    System.Threading.Thread.Sleep(10);
+                    count++;
+                }
+                else //if (count > 25 && trampJump == false)
+                {
+                    trampJump = false;
+                    count = 0;
+                }
+
+            }
+
+            else if (flying || hittingCap(mainCharacter.getLocation(), flyingCaps))
+            {
+                flying = true;
+                if (count < 50 && flying == true && !jump)
+                {
+                    double x;
+                    x = mainCharacter.getLocation().Y - 15;
+                    height += 15;
+                    mainCharacter.newYPos((float)x);
+                    System.Threading.Thread.Sleep(10);
+                    count++;
+                }
+                else
+                {
+                    flying = false;
+                    count = 0;
+                }
+            }
+
+
+
+
             if (mainCharacter.getLocation().Y < 100)
             {
                 //if(downCount < 25)
                 //{
-                movePlatsDown();
+
                 if (jump)
                 {
                     mainCharacter.setYLoc(5);
+                    movePlatsDown(10);
+                }
+                /*else
+                {
+                    //mainCharacter.setYLoc(15);
+                    movePlatsDown(10);
+                } */
+                else if (trampJump)
+                {
+                    mainCharacter.setYLoc(10);
+                    movePlatsDown(15);
+                }
+                else if (flying)
+                {
+                    mainCharacter.setYLoc(15);
+                    movePlatsDown(20);
                 }
                 else
                 {
-                    mainCharacter.setYLoc(15);
+                    //mainCharacter.setYLoc(20);
+                    movePlatsDown(5);
                 }
+
                 downCount++;
                 movingDown = true;
             }
@@ -413,20 +447,20 @@ class Game
         }
     }
 
-    public void movePlatsDown()
+    public void movePlatsDown(int distance)
     {
         for (int i = 0; i < platforms.Count; i++)
         {
             Platform temp = platforms[i];
             Vector2 tempVec = temp.getVector();
-            tempVec.Y = tempVec.Y + 10;
+            tempVec.Y = tempVec.Y + distance;
             platforms[i] = new Platform(tempVec);
         }
 
         for (int i = 0; i < enemies.Count; i++)
         {
             Vector2 temp = (Vector2)enemies[i].getLocation();
-            temp.Y = temp.Y + 10;
+            temp.Y = temp.Y + distance;
             Enemy newEnemy = new Enemy();
             newEnemy.setLocation(temp);
             enemies[i] = newEnemy;
@@ -435,21 +469,21 @@ class Game
         for (int i = 0; i < trampolines.Count; i++)
         {
             Vector2 temp = (Vector2)trampolines[i];
-            temp.Y = temp.Y + 10;
+            temp.Y = temp.Y + distance;
             trampolines[i] = temp;
         }
 
         for (int i = 0; i < flyingCaps.Count; i++)
         {
             Vector2 temp = (Vector2)flyingCaps[i];
-            temp.Y = temp.Y + 10;
+            temp.Y = temp.Y + distance;
             flyingCaps[i] = temp;
         }
 
         for (int i = 0; i < shields.Count; i++)
         {
             Vector2 temp = (Vector2)shields[i];
-            temp.Y = temp.Y + 10;
+            temp.Y = temp.Y + distance;
             shields[i] = temp;
         }
     }
