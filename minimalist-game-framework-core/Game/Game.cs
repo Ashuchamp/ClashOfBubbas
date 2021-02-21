@@ -102,11 +102,11 @@ class Game
             Engine.DrawTexture(endBackground, bck);
             if (Engine.GetKeyHeld(Key.P))
             {
-                death = false;
+                reset();
             }
             if(Engine.GetKeyHeld(Key.H))
             {
-                death = false;
+                reset();
                 homeScreen = true;
             } 
         }
@@ -116,8 +116,6 @@ class Game
             if(Engine.GetKeyHeld(Key.S))
             {
                 homeScreen = false;
-                height = 0;
-                score = 0;
                 alreadyUpdatedScores = false;
             }
         }
@@ -227,6 +225,29 @@ class Game
         }
     }
 
+    public void reset()
+    {
+        death = false;
+        platforms = new List<Platform>();
+        trampolines = new ArrayList();
+        flyingCaps = new ArrayList();
+        bullets = new ArrayList();
+        shields = new ArrayList();
+        enemies = new List<Enemy>();
+        brokenPlatforms = new ArrayList();
+        plat1 = new Vector2(100, 300);
+        plat2 = new Vector2(200, 90);
+        plat3 = new Vector2(250, 30);
+        scoreVec = new Vector2(10, 10);
+        time = 0;
+        trampJump = false;
+        flying = false;
+        //lastPlatY = 470;
+        mainCharacter = new Character();
+        height = 0;
+        score = 0;
+        compiled = false;
+    }
     public void shootingBullet()
     {
         if (!death)
