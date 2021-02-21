@@ -26,6 +26,7 @@ class Game
     readonly Texture homeBackground = Engine.LoadTexture("homeBackground.png");
     readonly Sound deadSound = Engine.LoadSound("Cat-sound-mp3.mp3");
     readonly Sound shootSound = Engine.LoadSound("shoot.mp3");
+    readonly Sound jumpSound = Engine.LoadSound("jump.mp3");
 
     //Vector2 charLocation = new Vector2(145, 440);
     //Vector2 platLocation = new Vector2(100, 300);
@@ -299,6 +300,11 @@ class Game
             if ((jump || hitting(mainCharacter.getLocation(), platforms)) && !trampJump && !flying)
             {
                 jump = true;
+                if(hitting(mainCharacter.getLocation(), platforms))
+                {
+                    Engine.PlaySound(jumpSound, false, 0);
+
+                }
                 if (count < 25 && jump == true)// && !trampJump)
                 {
                     double x;
@@ -328,7 +334,7 @@ class Game
                     System.Threading.Thread.Sleep(10);
                     count++;
                 }
-                else if (count > 25 && trampJump == false)
+                else// if (count > 25 && trampJump == false)
                 {
                     trampJump = false;
                     count = 0;
@@ -339,6 +345,7 @@ class Game
             if (flying || hittingCap(mainCharacter.getLocation(), flyingCaps))
             {
                 flying = true;
+                
                 if (count < 50 && flying == true && !jump)
                 {
                     double x;
@@ -561,7 +568,7 @@ class Game
             int xLoc = (int)temp1.X;
             int newY = random.Next(yLoc - 125, yLoc - 50);
             int tempX = random.Next(0, 280);
-            while(Math.Abs(xLoc - tempX) < 30)
+            while (Math.Abs(xLoc - tempX) < 30)
             {
                 tempX = random.Next(0, 280);
             }
@@ -584,9 +591,9 @@ class Game
                 trampPresent = true;
             }
 
-            if (capProb < 10)
+            if (capProb < 10 && trampPresent == false)
             {
-                Vector2 capTemp = new Vector2(newX, newY - 40);
+                Vector2 capTemp = new Vector2(newX + 5, newY - 10);
                 flyingCaps.Add(capTemp);
                 capPresent = true;
             }
@@ -610,7 +617,7 @@ class Game
             enemyPresent = false;
             capPresent = false;
 
-            
+
         }
     }
 
@@ -651,13 +658,18 @@ class Game
 
     public Boolean hittingCap(Vector2 charLocation, ArrayList caps)
     {
-        if (!death)
+        int i = 0;
+        if (!death || !trampJump)
         {
             {
                 foreach (Vector2 platform in caps)
                 {
-                    if (Math.Abs(charLocation.X - platform.X) <= 40 && Math.Abs(charLocation.Y - platform.Y) <= 29)
+
+                    i++;
+                    if (Math.Abs(charLocation.X - platform.X) <= 40 && Math.Abs(charLocation.Y - platform.Y) <= 40)
                     {
+                        Console.WriteLine("hit cap");
+                        caps.RemoveAt(i-1);
                         return true;
                     }
                 }
