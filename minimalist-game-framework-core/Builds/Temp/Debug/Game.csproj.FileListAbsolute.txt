@@ -37,3 +37,10 @@ C:\Users\brian\Documents\GitHub\project-2---recreate-a-classic-video-game-clash-
 C:\Users\brian\Documents\GitHub\project-2---recreate-a-classic-video-game-clash-of-the-bubbas\minimalist-game-framework-core\Builds\Temp\Debug\Game.csproj.CoreCompileInputs.cache
 C:\Users\brian\Documents\GitHub\project-2---recreate-a-classic-video-game-clash-of-the-bubbas\minimalist-game-framework-core\Builds\Temp\Debug\Game.exe
 C:\Users\brian\Documents\GitHub\project-2---recreate-a-classic-video-game-clash-of-the-bubbas\minimalist-game-framework-core\Builds\Temp\Debug\Game.pdb
+C:\Users\brian\Source\Repos\project-2---recreate-a-classic-video-game-clash-of-the-bubbas5\minimalist-game-framework-core\Builds\Debug\Game.exe.config
+C:\Users\brian\Source\Repos\project-2---recreate-a-classic-video-game-clash-of-the-bubbas5\minimalist-game-framework-core\Builds\Debug\Game.exe
+C:\Users\brian\Source\Repos\project-2---recreate-a-classic-video-game-clash-of-the-bubbas5\minimalist-game-framework-core\Builds\Debug\Game.pdb
+C:\Users\brian\Source\Repos\project-2---recreate-a-classic-video-game-clash-of-the-bubbas5\minimalist-game-framework-core\Builds\Temp\Debug\Game.csprojAssemblyReference.cache
+C:\Users\brian\Source\Repos\project-2---recreate-a-classic-video-game-clash-of-the-bubbas5\minimalist-game-framework-core\Builds\Temp\Debug\Game.csproj.CoreCompileInputs.cache
+C:\Users\brian\Source\Repos\project-2---recreate-a-classic-video-game-clash-of-the-bubbas5\minimalist-game-framework-core\Builds\Temp\Debug\Game.exe
+C:\Users\brian\Source\Repos\project-2---recreate-a-classic-video-game-clash-of-the-bubbas5\minimalist-game-framework-core\Builds\Temp\Debug\Game.pdb
