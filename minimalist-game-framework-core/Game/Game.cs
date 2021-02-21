@@ -22,7 +22,7 @@ class Game
 
     readonly Texture background = Engine.LoadTexture("background.png");
     //readonly Texture endBackground = Engine.LoadTexture("endBackground.png");
-    //readonly Texture homeBackground = Engine.LoadTextyre("homeBackground.png");
+    readonly Texture homeBackground = Engine.LoadTexture("homeBackground.png");
     readonly Sound deadSound = Engine.LoadSound("Cat-sound-mp3.mp3");
 
     //Vector2 charLocation = new Vector2(145, 440);
@@ -103,7 +103,7 @@ class Game
         }
         else if(homeScreen)
         {
-            //Engine.DrawTexture(homeBackground, bck);
+            Engine.DrawTexture(homeBackground, bck);
             if(Engine.GetKeyHeld(Key.S))
             {
                 homeScreen = false;
