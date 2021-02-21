@@ -294,7 +294,7 @@ class Game
                     System.Threading.Thread.Sleep(10);
                     count++;
                 }
-                else if (count > 25 && trampJump == false)
+                else //if (count > 25)// && trampJump == false)
                 {
                     trampJump = false;
                     count = 0;
@@ -471,6 +471,8 @@ class Game
                     // }
                 }
             }
+
+            
         }
     }
 
@@ -550,9 +552,9 @@ class Game
                 trampPresent = true;
             }
 
-            if (capProb < 10)
+            if (capProb < 10 && trampPresent == false)
             {
-                Vector2 capTemp = new Vector2(newX, newY - 40);
+                Vector2 capTemp = new Vector2(newX+5, newY - 10);
                 flyingCaps.Add(capTemp);
                 capPresent = true;
             }
@@ -622,8 +624,9 @@ class Game
             {
                 foreach (Vector2 platform in caps)
                 {
-                    if (Math.Abs(charLocation.X - platform.X) <= 40 && Math.Abs(charLocation.Y - platform.Y) <= 29)
+                    if (Math.Abs(charLocation.X - platform.X) <= 40 && Math.Abs(charLocation.Y - platform.Y) <= 40)
                     {
+                        Console.WriteLine("hit cap");
                         return true;
                     }
                 }
@@ -638,7 +641,7 @@ class Game
         int charX = (int)mainCharacter.getLocation().X;
         int charY = (int)mainCharacter.getLocation().Y;
 
-        if (!trampJump)
+        if (!trampJump && !flying)
         {
             foreach (Enemy enemy in enemies)
             {
