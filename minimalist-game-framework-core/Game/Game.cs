@@ -24,6 +24,7 @@ class Game
     readonly Texture endBackground = Engine.LoadTexture("endBackground.png");
     readonly Texture homeBackground = Engine.LoadTexture("homeBackground.png");
     readonly Sound deadSound = Engine.LoadSound("Cat-sound-mp3.mp3");
+    readonly Sound shootSound = Engine.LoadSound("shoot.mp3");
 
     //Vector2 charLocation = new Vector2(145, 440);
     //Vector2 platLocation = new Vector2(100, 300);
@@ -210,8 +211,11 @@ class Game
             {
                 mainCharacter.respondToKey("D");
             }
-            if(Engine.GetKeyHeld(Key.Space))
+            if(Engine.GetKeyDown(Key.Space))
             {
+                Engine.PlaySound(shootSound, false, 0);
+
+                ////////////////////////////////////////////////////////////////////////////////////////
                 bullets.Add(mainCharacter.shoot());
             }
             jumping();
@@ -261,7 +265,7 @@ class Game
             if ((jump || hitting(mainCharacter.getLocation(), platforms)) && !trampJump && !flying)
             {
                 jump = true;
-                if (count < 25 && jump == true && !trampJump)
+                if (count < 25 && jump == true)// && !trampJump)
                 {
                     double x;
                     x = mainCharacter.getLocation().Y - 5;
@@ -277,7 +281,7 @@ class Game
                 }
             }
 
-            else if ((trampJump || hittingTramp(mainCharacter.getLocation(), trampolines)) && !flying)
+            if ((trampJump || hittingTramp(mainCharacter.getLocation(), trampolines)) && !flying)
             {
                 Console.WriteLine("inside tramp");
                 trampJump = true;
@@ -290,7 +294,7 @@ class Game
                     System.Threading.Thread.Sleep(10);
                     count++;
                 }
-                else //if (count > 25 && trampJump == false)
+                else if (count > 25 && trampJump == false)
                 {
                     trampJump = false;
                     count = 0;
@@ -298,7 +302,7 @@ class Game
 
             }
 
-            else if (flying || hittingCap(mainCharacter.getLocation(), flyingCaps))
+            if (flying || hittingCap(mainCharacter.getLocation(), flyingCaps))
             {
                 flying = true;
                 if (count < 50 && flying == true && !jump)
@@ -447,7 +451,7 @@ class Game
                 {
                     Vector2 currentBullet = new Vector2();
                     Vector2 currentEnemy = new Vector2();
-                    if (bullets.Count > 1)
+                    if (bullets.Count > 0)
                     {
                         currentBullet = (Vector2)bullets[i];
                     }
