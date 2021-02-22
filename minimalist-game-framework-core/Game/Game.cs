@@ -745,7 +745,7 @@ class Game
 
     public void bubbaBoss()
     {
-        if (score > 200 && score % 3000 > 0 && score % 3000 < 2000)
+        if (score > 4000 && score % 3000 > 0 && score % 3000 < 2000)
         {
             bubbaActive = true;
             if (bossLocation.X > 310)
