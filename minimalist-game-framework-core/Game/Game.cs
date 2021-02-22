@@ -666,7 +666,7 @@ class Game
                 {
 
                     i++;
-                    if (Math.Abs(charLocation.X - platform.X) <= 40 && Math.Abs(charLocation.Y - platform.Y) <= 40)
+                    if (Math.Abs(charLocation.X - platform.X) <= 40 && Math.Abs(charLocation.Y - platform.Y) <= 40 && !jump)
                     {
                         Console.WriteLine("hit cap");
                         caps.RemoveAt(i-1);
