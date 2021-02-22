@@ -68,7 +68,6 @@
     <Compile Include="Engine\SDL2\SDL2_mixer.cs" />
     <Compile Include="Engine\SDL2\SDL2_ttf.cs" />
     <Compile Include="Game\Platform.cs" />
-    <Compile Include="Game\Powerup.cs" />
     <Compile Include="Game\ScoreBoard.cs" />
   </ItemGroup>
   <ItemGroup>
