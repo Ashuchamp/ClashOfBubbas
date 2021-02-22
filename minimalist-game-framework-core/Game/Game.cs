@@ -27,6 +27,8 @@ class Game
     readonly Sound deadSound = Engine.LoadSound("Cat-sound-mp3.mp3");
     readonly Sound shootSound = Engine.LoadSound("shoot.mp3");
     readonly Sound jumpSound = Engine.LoadSound("jump.mp3");
+    readonly Sound backgroundSound1 = Engine.LoadSound("bMusic1.mp3");
+    readonly Music backgroundSound2 = Engine.LoadMusic("bMusic2.mp3");
 
     //Vector2 charLocation = new Vector2(145, 440);
     //Vector2 platLocation = new Vector2(100, 300);
@@ -184,6 +186,7 @@ class Game
                     Platform temp = new Platform(new Vector2(random.Next(0, 280), lastPlatY));
 
                     platforms.Add(temp);
+                    Engine.PlayMusic(backgroundSound2);
                     //Engine.DrawTexture(customPlatT, temp);
                 }
                 compiled = true;
@@ -721,6 +724,7 @@ class Game
             int charCurrentY = (int)mainCharacter.getLocation().Y;
 
             mainCharacter.setYLoc(charCurrentY - 10);
+            Engine.StopMusic(1);
 
 
 
