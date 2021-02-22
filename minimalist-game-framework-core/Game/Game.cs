@@ -7,8 +7,6 @@ class Game
     public static readonly string Title = "Minimalist Game Framework";
     public static readonly Vector2 Resolution = new Vector2(320, 480);
 
-    Texture charRight = Engine.LoadTexture("charR.png");
-    readonly Texture charLeft = Engine.LoadTexture("charL.png");
     readonly Texture Tplat1 = Engine.LoadTexture("plat.png");
     readonly Texture customPlatT = Engine.LoadTexture("plat1.png");
     readonly Texture bulletPic = Engine.LoadTexture("bullet.png");
@@ -16,10 +14,10 @@ class Game
     readonly Texture capText = Engine.LoadTexture("flyingCap.png");
     readonly Texture trampolineTex = Engine.LoadTexture("trampoline.png");
     readonly Texture shieldTex = Engine.LoadTexture("shield.png");
-    readonly Texture char1Zoom = Engine.LoadTexture("char1RZoom.png");
+    /*readonly Texture char1Zoom = Engine.LoadTexture("char1RZoom.png");
     readonly Texture char2Zoom = Engine.LoadTexture("char2RZoom.png");
     readonly Texture char3Zoom = Engine.LoadTexture("char3RZoom.png");
-    readonly Texture char4Zoom = Engine.LoadTexture("char4RZoom.png");
+    readonly Texture char4Zoom = Engine.LoadTexture("char4RZoom.png");*/
     readonly Font font = Engine.LoadFont("FiraCode-Medium.ttf", pointSize: 20);
     readonly Font scoreFont = Engine.LoadFont("FiraCode-Medium.ttf", pointSize: 12);
     readonly Font pauseFont = Engine.LoadFont("FiraCode-Medium.ttf", pointSize: 8);
@@ -29,7 +27,7 @@ class Game
     readonly Texture background = Engine.LoadTexture("background.png");
     readonly Texture endBackground = Engine.LoadTexture("endBackground.png");
     readonly Texture homeBackground = Engine.LoadTexture("homeBackground.png");
-    readonly Texture pauseScreen = Engine.LoadTexture("PauseScreen.png");
+    readonly Texture pauseScreen = Engine.LoadTexture("PauseScreen.jpg");
     readonly Sound deadSound = Engine.LoadSound("Cat-sound-mp3.mp3");
     readonly Sound shootSound = Engine.LoadSound("shoot.mp3");
     readonly Sound jumpSound = Engine.LoadSound("jump.mp3");
@@ -141,8 +139,7 @@ class Game
         {
             Engine.DrawTexture(homeBackground, bck);
             Engine.DrawString("Emergency Key: Press 'P' to pause the game!", new Vector2(2, 425), Color.DarkRed, pauseFont);
-            Engine.DrawString("Press 'U' to unpause the game!", new Vector2(2, 432), Color.DarkRed, pauseFont);
-            Engine.DrawString("Press the right arrow to go to the character selection screen.", new Vector2(2, 440), Color.Black, pauseFont);
+            Engine.DrawString("Press the right arrow to go to the character selection screen.", new Vector2(2, 435), Color.Black, pauseFont);
             if(Engine.GetKeyHeld(Key.S))
             {
                 homeScreen = false;
@@ -154,7 +151,7 @@ class Game
                 characterScreen = true;
             }
         }
-        else if(characterScreen)
+        /*else if(characterScreen)
         {
             Engine.DrawTexture(background, bck);
             Engine.DrawString("If you are ready to play, press the 'S' key to begin!", new Vector2(2, 420), Color.Black, font);
@@ -188,12 +185,16 @@ class Game
                 homeScreen = false;
                 alreadyUpdatedScores = false;
             }
-        }
+        }*/
         else
         {
             if(pause)
             {
                 Engine.DrawTexture(pauseScreen, bck);
+                if(Engine.GetKeyDown(Key.U))
+                {
+                    pause = false;
+                }
             }
             else
             {
