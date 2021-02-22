@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 
 class Character
 {
-    Texture charTexture = Engine.LoadTexture("charR.png");
+    private Texture charTexture;
     //readonly Texture charLeft = Engine.LoadTexture("charL.png");
     //readonly Texture shoot = Engine.LoadTexture("shoot.png");
     private Vector2 charLocation;
     private Boolean powerupActivated;
+    private int numTexture;
     //private Boolean jump = false;
     //private ArrayList powerups = new ArrayList();
 
@@ -43,16 +44,27 @@ class Character
     {
         jump = newJump;
     }*/
+    public void setTexture(int num)
+    {
+        numTexture = num;
+        charTexture = Engine.LoadTexture("char" + numTexture + "R.png");
+    }
+    public int getTextureNum()
+    {
+        return numTexture;
+    }
     public Character()
     {
         charLocation = new Vector2(145, 340);
         powerupActivated = false;
+        numTexture = 1;
+        charTexture = Engine.LoadTexture("char" + numTexture + "R.png");
     }
     public void respondToKey(String keyName)
     {
         if (keyName == "A") // && charLocation.X > 0)
         {
-            charTexture = Engine.LoadTexture("charL.png");
+            charTexture = Engine.LoadTexture("char" + numTexture + "L.png");
 
             if (charLocation.X < 0)
             {
@@ -62,7 +74,7 @@ class Character
         }
         if (keyName == "D") //&& charLocation.X < 290)
         {
-            charTexture = Engine.LoadTexture("charR.png");
+            charTexture = Engine.LoadTexture("char" + numTexture + "R.png");
 
             if (charLocation.X > 300)
             {
