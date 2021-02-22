@@ -14,6 +14,8 @@ class Game
     readonly Texture bulletPic = Engine.LoadTexture("bullet.png");
     readonly Texture enemyPic = Engine.LoadTexture("enemy1.png");
     readonly Texture capText = Engine.LoadTexture("flyingCap.png");
+    readonly Texture sheildForChar = Engine.LoadTexture("shieldForChar.png");
+
     readonly Texture trampolineTex = Engine.LoadTexture("trampoline.png");
     readonly Texture shieldTex = Engine.LoadTexture("shield.png");
     readonly Font font = Engine.LoadFont("FiraCode-Medium.ttf", pointSize: 20);
@@ -247,6 +249,14 @@ class Game
             //breakPlatform();
         }
         bubbaBoss();
+        if (shieldOn)
+        {
+            Vector2 temp = mainCharacter.getLocation();
+            temp.X -= 3;
+            temp.Y -= 3;
+            Engine.DrawTexture(sheildForChar, temp);
+
+        }
 
     }
 
@@ -723,9 +733,15 @@ class Game
             } 
             Engine.DrawTexture(bossEnemy, bossLocation);
             
-            if(Math.Abs(bossLocation.X - mainCharacter.getLocation().X) < 80 && Math.Abs(bossLocation.X - mainCharacter.getLocation().X) > 0 && Math.Abs(bossLocation.X - mainCharacter.getLocation().Y) > 0 && Math.Abs(bossLocation.X - mainCharacter.getLocation().Y) < 50)
+            if(!shieldOn && Math.Abs(bossLocation.X - mainCharacter.getLocation().X) < 80 && Math.Abs(bossLocation.X - mainCharacter.getLocation().X) > 0 && Math.Abs(bossLocation.X - mainCharacter.getLocation().Y) > 0 && Math.Abs(bossLocation.X - mainCharacter.getLocation().Y) < 50)
             {
                 death = true;
+            }
+
+            if (shieldOn)
+            {
+                score += 1000;
+                shieldOn = false;
             }
 
 
@@ -807,6 +823,7 @@ class Game
                 if (Math.Abs(charX - currentShield.X) <= 40 && charY - currentShield.Y <= -30 && charY - currentShield.Y >= -40 && !shieldOn)
                 {
                     shieldOn = true;
+                    Engine.DrawTexture(sheildForChar, mainCharacter.getLocation());
                     shields.RemoveAt(i);
                     i--;
 
