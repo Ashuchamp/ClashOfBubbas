@@ -319,8 +319,6 @@ class Game
                 if(Engine.GetKeyDown(Key.Space))
                 {
                     Engine.PlaySound(shootSound, false, 0);
-
-                    ////////////////////////////////////////////////////////////////////////////////////////
                     bullets.Add(mainCharacter.shoot());
                 }
                 if(Engine.GetKeyDown(Key.P))
