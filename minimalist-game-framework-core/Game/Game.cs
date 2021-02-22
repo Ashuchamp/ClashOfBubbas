@@ -7,29 +7,55 @@ class Game
     public static readonly string Title = "Minimalist Game Framework";
     public static readonly Vector2 Resolution = new Vector2(320, 480);
 
-    Texture charRight = Engine.LoadTexture("charR.png");
-    readonly Texture charLeft = Engine.LoadTexture("charL.png");
+    //loading pictures and sounds
+    readonly Texture bubba = Engine.LoadTexture("char4R.png");
     readonly Texture Tplat1 = Engine.LoadTexture("plat.png");
     readonly Texture customPlatT = Engine.LoadTexture("plat1.png");
     readonly Texture bulletPic = Engine.LoadTexture("bullet.png");
-    readonly Texture enemyPic = Engine.LoadTexture("enemy.png");
+    readonly Texture enemyPic = Engine.LoadTexture("enemy1.png");
+    readonly Texture capText = Engine.LoadTexture("flyingCap.png");
     readonly Texture trampolineTex = Engine.LoadTexture("trampoline.png");
+    readonly Texture shieldTex = Engine.LoadTexture("shield.png");
+    readonly Texture bossEnemy = Engine.LoadTexture("bubbaEnemy.png");
+    readonly Texture char1Zoom = Engine.LoadTexture("char1Zoom.png");
+    readonly Texture char2Zoom = Engine.LoadTexture("char2Zoom.png");
+    readonly Texture char3Zoom = Engine.LoadTexture("char3Zoom.png");
+    readonly Texture char4Zoom = Engine.LoadTexture("char4Zoom.png");
     readonly Font font = Engine.LoadFont("FiraCode-Medium.ttf", pointSize: 20);
-    //readonly Texture Tplat2 = Engine.LoadTexture("plat.png");
-    //readonly Texture Tplat3 = Engine.LoadTexture("plat.png");
+    readonly Font scoreFont = Engine.LoadFont("FiraCode-Medium.ttf", pointSize: 12);
+    readonly Font pauseFont = Engine.LoadFont("FiraCode-Medium.ttf", pointSize: 8);
+    float difficultyBasedOnChar = 1;
+  
 
-    readonly Texture background = Engine.LoadTexture("background.jpg");
+    readonly Texture background = Engine.LoadTexture("background.png");
+    readonly Texture nightSky = Engine.LoadTexture("nightSky.png");
+    readonly Texture endBackground = Engine.LoadTexture("endBackground.png");
+    readonly Texture homeBackground = Engine.LoadTexture("homeBackground.png");
 
-    //Vector2 charLocation = new Vector2(145, 440);
-    //Vector2 platLocation = new Vector2(100, 300);
+    readonly Texture pauseScreen = Engine.LoadTexture("PauseScreen.jpg");
+    readonly Sound deadSound = Engine.LoadSound("Cat-sound-mp3.mp3");
+    readonly Sound shootSound = Engine.LoadSound("shoot.mp3");
+    readonly Sound jumpSound = Engine.LoadSound("jump.mp3");
+    readonly Sound backgroundSound1 = Engine.LoadSound("bMusic1.mp3");
+    readonly Music backgroundSound2 = Engine.LoadMusic("bMusic2.mp3");
+    readonly Texture shieldForChar = Engine.LoadTexture("shieldForChar.png");
+    
+    //initializing objects, fields, and variables
     List<Platform> platforms = new List<Platform>();
     ArrayList trampolines = new ArrayList();
+    ArrayList flyingCaps = new ArrayList();
     ArrayList bullets = new ArrayList();
+    ArrayList shields = new ArrayList();
     List<Enemy> enemies = new List<Enemy>();
     ArrayList brokenPlatforms = new ArrayList();
     Vector2 bck = new Vector2(0, 0);
-
     Boolean death = false;
+    Boolean homeScreen = true;
+    Boolean characterScreen = false;
+    Boolean pause = false;
+    Boolean bubbaActive = false;
+    double difficulty = 1;
+    int charSelect = 1;
 
     Vector2 plat1 = new Vector2(100, 300);
 
@@ -39,136 +65,328 @@ class Game
 
     Vector2 scoreVec = new Vector2(10, 10);
 
-    int time = 0;
-    //    public void plats()
-    //    { 
-    //        Random random = new System.Random();
-    //        for (int i = 0; i < 5; i++)
-    //        {
-    //            Vector2 temp = new Vector2(random.Next(0, 280), random.Next(50, 400));
-    //            platforms.Add(temp);
-    //            Engine.DrawTexture(plat1, temp);
-    //
-    //        }
-    //    }
+    Vector2 finalScoreVec = new Vector2(70, 210);
 
+    Vector2 scoreBoardHeadVec = new Vector2(10, 225);
+    Vector2 bossLocation = new Vector2(5, 60);
+
+    int time = 0;
+
+    private ScoreBoard sb;
     private int height;
     private int score;
     private int count;
     private Boolean jump;
     private Boolean compiled;
+    private Boolean shieldOn;
+    private Boolean alreadyUpdatedScores;
 
     private Boolean trampJump = false;
+    private Boolean flying = false;
     private Boolean movingDown;
     private int downCount;
     private int lastPlatY;
+    private Boolean shieldCooldown;
+    Boolean bossDirectionRight = false;
+
+    private int shieldCoolTimer;
+    //constructor
     public Game()
     {
+        sb = new ScoreBoard();
         lastPlatY = 470;
-        height = 470;
     }
 
     Character mainCharacter = new Character();
 
     public void Update()
     {
+        difficulty = score * 0.0001 + 1;
+        //if character falls below screen, character dies
+        if(mainCharacter.getLocation().Y >= 480)
+        {
+            death = true;
+        }
+        //death screen functionality
+        if(death)
+        {
+            if (!alreadyUpdatedScores)
+            {
+                sb.modifyScoreBoard(score);
+            }
+            Engine.StopMusic(1);
+            alreadyUpdatedScores = true;
+            Engine.DrawTexture(endBackground, bck);
+            Engine.DrawString(score.ToString(), finalScoreVec, Color.LightBlue, scoreFont); //draw player score
+            Engine.DrawString("High Scores:", scoreBoardHeadVec, Color.LawnGreen, scoreFont);
+            Vector2 currentVec = new Vector2(scoreBoardHeadVec.X, scoreBoardHeadVec.Y + 15);
+            for (int i = 1; i <= 10; i++)
+            {
+                Engine.DrawString(i + ": " + sb.getScore(i), currentVec, Color.Yellow, scoreFont); //draw top ten scores
+                currentVec.Y += 15;
+            }
+            //'p' to play again
+            if (Engine.GetKeyHeld(Key.P))
+            {
+                int tempTexture = mainCharacter.getTextureNum();
+                reset(); //resets all variables and fields for new round
+                mainCharacter.setTexture(tempTexture);
+            }
+            //'h' for home screen
+            if(Engine.GetKeyHeld(Key.H))
+            {
+                reset();
+                homeScreen = true;
+                charSelect = 1;
+            } 
+        }
+        else if(homeScreen)
+        {
+            Engine.DrawTexture(homeBackground, bck);
+            Engine.DrawString("Emergency Key: Press 'P' to pause the game!", new Vector2(2, 430), Color.DarkRed, pauseFont);
+            Engine.DrawString("Press the right arrow to go to the character selection screen.", new Vector2(2, 445), Color.Black, pauseFont);
+            //'s' to start game
+            if(Engine.GetKeyHeld(Key.S))
+            {
+                homeScreen = false;
+                alreadyUpdatedScores = false;
+            }
+            //'right arrow' to go to character selection screen
+            if(Engine.GetKeyHeld(Key.Right))
+            {
+                homeScreen = false;
+                characterScreen = true;
+            }
+        }
+        else if(characterScreen)
+        {
+            Engine.DrawTexture(background, bck);
+            Engine.DrawString("Press 1, 2, 3, or 4 to switch your character!", new Vector2(2, 157), Color.Black, scoreFont);
+            Engine.DrawString("If you are ready to play, press the 'S' key!", new Vector2(2, 420), Color.Black, scoreFont);
+            Vector2 char1Loc = new Vector2(80, 200);
+            Vector2 char2Loc = new Vector2(-20, 190);
+            Vector2 char3Loc = new Vector2(40, 180);
+            Vector2 char4Loc = new Vector2(90, 200);
+            //press '1', '2', '3', and '4' to switch between distinct characters with different difficulty levels
+            if(Engine.GetKeyDown(Key.NumRow1))
+            {
+                charSelect = 1;
+            }
+            if(Engine.GetKeyDown(Key.NumRow2))
+            {
+                charSelect = 2;
+                difficultyBasedOnChar = (float)1.5;
+            }
+            if(Engine.GetKeyDown(Key.NumRow3))
+            {
+                charSelect = 3;
+                difficultyBasedOnChar = (float)2;
+            }
+            if(Engine.GetKeyHeld(Key.NumRow4))
+            {
+                charSelect = 4;
+                difficultyBasedOnChar = (float)2.5;
+            }
+            mainCharacter.setTexture(charSelect);
+            if(charSelect == 2)
+            {
+                Engine.DrawTexture(char2Zoom, char2Loc);
+            }
+            else if(charSelect == 3)
+            {
+                Engine.DrawTexture(char3Zoom, char3Loc);
+            }
+            else if(charSelect == 4)
+            {
+                Engine.DrawTexture(char4Zoom, char4Loc);
+            }
+            else
+            {
+                Engine.DrawTexture(char1Zoom, char1Loc);
+            }
+            //'s' to start game
+            if(Engine.GetKeyHeld(Key.S))
+            {
+                characterScreen = false;
+            }
+        }
+        else
+        {
+            //adding pause functionality to the game so that the player has the emergency pause 
+            if(pause)
+            {
+                Engine.DrawTexture(pauseScreen, bck);
+                if(Engine.GetKeyDown(Key.U))
+                {
+                    pause = false;
+                }
+            }
+            else
+            {
+                if (height > score)
+                {
+                    score = height; //scoring algorithm 
+                }
+                
+                Random random = new System.Random();
+
+
+                //making sure the player is always moving down
+                if (!jump && !movingDown)
+                {
+                    mainCharacter.setYLoc(5);
+                    height -= 5;
+                }
+
+
+                charHittingEnemy();
+                
+
+                //need to have some cool down after the shield period is over
+                if(shieldCooldown)
+                {
+                    if(shieldCoolTimer >= 50)
+                    {
+                        shieldCoolTimer = 0;
+                        shieldCooldown = false;
+                    }
+                    else
+                    {
+                        shieldCoolTimer++;
+                    }
+                }
+
+
+                // making bubba have a night sky when he is active 
+                if(bubbaActive)
+                {
+                    Engine.DrawTexture(nightSky, bck);
+                }
+                else
+                {
+                    Engine.DrawTexture(background, bck);
+                }
+                Engine.DrawTexture(mainCharacter.getCharTexture(), mainCharacter.getLocation());
+                
+
+
+                /*if this is the first time the code is running these are the basic variables that need to be defined 
+                for the game to run*/
+                if (!compiled && !death)
+                {
+                    lastPlatY = 470;
+                    platforms.Add(new Platform(new Vector2(140, 465)));
+                    for (int i = 0; i < 10; i++)
+                    {
+
+                        lastPlatY = random.Next(lastPlatY - 115, lastPlatY - 50);
+                        Platform temp = new Platform(new Vector2(random.Next(0, 280), lastPlatY));
+
+                        platforms.Add(temp);
+                        Engine.PlayMusic(backgroundSound2);
+                    }
+                    compiled = true;
+                }
+                
+
+
+                //making all the different game elements and drawing textures 
+                foreach (Platform plat in platforms)
+                {
+                    Engine.DrawTexture(customPlatT, plat.getVector());
+                }
+                foreach (Enemy enemy in enemies)
+                {
+                    Engine.DrawTexture(enemyPic, enemy.getLocation());
+                }
+                foreach(Vector2 tramp in trampolines)
+                {
+                    Engine.DrawTexture(trampolineTex, tramp);
+                }
+                foreach (Vector2 cap in flyingCaps)
+                {
+                    Engine.DrawTexture(capText, cap);
+                }
+                foreach (Vector2 shield in shields)
+                {
+                    Engine.DrawTexture(shieldTex, shield);
+                }
+                Engine.DrawString(score.ToString(), scoreVec, Color.Purple, font);
+
+                time++;
+
+                makePlatforms();
+
+                //making the character respond to all the different keys it needs to 
+                if(Engine.GetKeyHeld(Key.A))
+                {
+                    mainCharacter.respondToKey("A");
+                }
+                if(Engine.GetKeyHeld(Key.D))
+                {
+                    mainCharacter.respondToKey("D");
+                }
+                if(Engine.GetKeyDown(Key.Space))
+                {
+                    Engine.PlaySound(shootSound, false, 0);
+                    bullets.Add(mainCharacter.shoot());
+                }
+                if(Engine.GetKeyDown(Key.P))
+                {
+                    pause = true;
+                }
+                jumping();
+                shootingBullet();
 
         
-        /*if (death)
-        {
-            if (death)
-            {
-                double x;
-                
-                
-                    x = mainCharacter.getLocation().Y - 5;
-                    height += 5;
-                
-                mainCharacter.newYPos((float)x);
-                System.Threading.Thread.Sleep(10);
+                bubbaBoss();
+                charHittingShield();
+                if (shieldOn)
+                {
+                    Vector2 temp = mainCharacter.getLocation();
+                    temp.X -= 3;
+                    temp.Y -= 3;
+                    Engine.DrawTexture(shieldForChar, temp);
+
+                }
             }
-            return;
         }
-        */
-        if (height > score)
-        {
-            score = height;
-        }
-        //platforms.Add(plat1);
-        //platforms.Add(plat2);
-        //platforms.Add(plat3);
-        Random random = new System.Random();
-
-        if (!jump && !movingDown)
-        {
-            mainCharacter.setYLoc(5);
-            height -= 5;
-        }
-        charHittingEnemy();
-        //charLocation.Y += 5;
-
-        Engine.DrawTexture(background, bck);
-        Engine.DrawTexture(mainCharacter.getCharTexture(), mainCharacter.getLocation());
-        //Engine.DrawTexture(Tplat1, plat1);
-        //Engine.DrawTexture(Tplat1, plat2);
-        //Engine.DrawTexture(Tplat1, plat3);
-
-        if (!compiled && !death)
-        {
-            lastPlatY = 470;
-            platforms.Add(new Platform(new Vector2(140, 465)));
-            for (int i = 0; i < 10; i++)
-            {
-
-                //int enemyProb = random.Next(0, 100);
-                lastPlatY = random.Next(lastPlatY - 115, lastPlatY - 50);
-                Platform temp = new Platform(new Vector2(random.Next(0, 280), lastPlatY));
-
-                platforms.Add(temp);
-                //Engine.DrawTexture(customPlatT, temp);
-            }
-            compiled = true;
-        }
-
-        foreach (Platform plat in platforms)
-        {
-            Engine.DrawTexture(customPlatT, plat.getVector());
-        }
-        foreach (Enemy enemy in enemies)
-        {
-            Engine.DrawTexture(enemyPic, enemy.getLocation());
-        }
-        foreach(Vector2 tramp in trampolines)
-        {
-            Engine.DrawTexture(trampolineTex, tramp);
-        }
-        Engine.DrawString(score.ToString(), scoreVec, Color.Purple, font);
-
-        time++;
-
-        makePlatforms();
-        //charActions();
-        if(Engine.GetKeyHeld(Key.A))
-        {
-            mainCharacter.respondToKey("A");
-        }
-        if(Engine.GetKeyHeld(Key.D))
-        {
-            mainCharacter.respondToKey("D");
-        }
-        if(Engine.GetKeyHeld(Key.Space))
-        {
-            bullets.Add(mainCharacter.shoot());
-        }
-        jumping();
-        shootingBullet();
-        //}
-
-        
-        //breakPlatform();
-
     }
 
+    /// <summary>
+    /// making sure the game is reset to its original fucntionality so that the player can polay again without having to "x" out of the game
+    /// </summary>
+    public void reset()
+    {
+        death = false;
+        platforms = new List<Platform>();
+        trampolines = new ArrayList();
+        flyingCaps = new ArrayList();
+        bullets = new ArrayList();
+        shields = new ArrayList();
+        enemies = new List<Enemy>();
+        brokenPlatforms = new ArrayList();
+        plat1 = new Vector2(100, 300);
+        plat2 = new Vector2(200, 90);
+        plat3 = new Vector2(250, 30);
+        scoreVec = new Vector2(10, 10);
+        time = 0;
+        trampJump = false;
+        flying = false;
+        shieldOn = false;
+        mainCharacter = new Character();
+        height = 0;
+        score = 0;
+        compiled = false;
+        characterScreen = false;
+        pause = false;
+        bubbaActive = false;
+    }
+
+
+    /// <summary>
+    /// making the bullets from the character and putting them in an array
+    /// </summary>
     public void shootingBullet()
     {
         if (!death)
@@ -185,71 +403,112 @@ class Game
         }
     }
 
-    public void makeBrokenPlatform()
-    {
-        Random random = new System.Random();
-        for (int i = 0; i < platforms.Count; i++)
-        {
-            if (random.Next(0, 100) < 80)
-            {
-                brokenPlatforms.Add(platforms[i]);
-                Vector2 temp = new Vector2();
-                temp = platforms[1].getVector();
 
-            }
-        }
-    }
 
+    /// <summary>
+    /// make sure the jump happens smoothly with all the different kinds of powerups 
+    /// </summary>
     public void jumping()
     {
         if (!death)
         {
-            if (jump || hitting(mainCharacter.getLocation(), platforms))
+            if ((jump || hitting(mainCharacter.getLocation(), platforms)) && !trampJump && !flying)  // normal jump, count 25 up and then start coming back down with a height increase of 5 everytime
             {
                 jump = true;
-                if (count < 25 && jump == true)
+                if(hitting(mainCharacter.getLocation(), platforms) && jump)
                 {
-                    count++;
+                    Engine.PlaySound(jumpSound, false, 0);
+
+                }
+                if (count < 25 && jump == true && !trampJump)
+                {
                     double x;
-                    if (hittingTramp(mainCharacter.getLocation(), trampolines) || trampJump)
-                    {
-                        x = mainCharacter.getLocation().Y - 10;
-                        height += 10;
-                        trampJump = true;
-                        if (count == 25)
-                        {
-                            trampJump = false;
-                        }
-                        
-                    }
-                    else
-                    {
-                        x = mainCharacter.getLocation().Y - 5;
-                        height += 5;
-                    }
+                    x = mainCharacter.getLocation().Y - 5;
+                    height += 5;
                     mainCharacter.newYPos((float)x);
                     System.Threading.Thread.Sleep(10);
+                    count++;
                 }
                 else
                 {
                     jump = false;
                     count = 0;
-                    //
                 }
             }
-            if (mainCharacter.getLocation().Y < 100)
+
+            if ((trampJump || hittingTramp(mainCharacter.getLocation(), trampolines)) && !flying && !jump) // trampoline jump, count to 20 and then start coming back down. Each itteration makes that character go up 15 pixels (3x than normal jump)
             {
-                //if(downCount < 25)
-                //{
-                movePlatsDown();
-                if (jump)
+                Console.WriteLine("inside tramp");
+                trampJump = true;
+                if (count < 20 && trampJump == true && !jump)
                 {
-                    mainCharacter.setYLoc(5);
+                    double x;
+                    x = mainCharacter.getLocation().Y - 15;
+                    height += 15;
+                    mainCharacter.newYPos((float)x);
+                    System.Threading.Thread.Sleep(10);
+                    count++;
                 }
                 else
                 {
-                    mainCharacter.setYLoc(15);
+                    trampJump = false;
+                    count = 0;
                 }
+
+            }
+
+            if (flying || hittingCap(mainCharacter.getLocation(), flyingCaps) && !trampJump)  // flying, count to 50 --> long and fast jump to increase the user score | also adding that the user is invincivible duringthis time and doesnt get hurt
+            {
+                flying = true;
+                
+                if (count < 50 && flying == true && !jump)
+                {
+                    double x;
+                    x = mainCharacter.getLocation().Y - 15;
+                    height += 15;
+                    Vector2 temp = mainCharacter.getLocation();
+                    temp.X += 5;
+                    temp.Y -= 10;
+                    Engine.DrawTexture(capText, temp);
+                    mainCharacter.newYPos((float)x);
+                    System.Threading.Thread.Sleep(10);
+                    count++;
+                }
+                else
+                {
+                    flying = false;
+                    count = 0;
+                }
+            }
+
+
+
+            //moving the game elements down every iteration based on the kind of jump just accomplished 
+            if (mainCharacter.getLocation().Y < 100)
+            {
+                
+
+                if (jump)
+                {
+                    mainCharacter.setYLoc(5);
+                    movePlatsDown(10);
+                }
+                
+                else if (trampJump)
+                {
+                    mainCharacter.setYLoc(15);
+                    movePlatsDown(20);
+                }
+                else if (flying)
+                {
+                    mainCharacter.setYLoc(15);
+                    movePlatsDown(20);
+                }
+                else
+                {
+                    movePlatsDown(5);
+                }
+
                 downCount++;
                 movingDown = true;
             }
@@ -261,63 +520,15 @@ class Game
         }
     }
 
-    /*public void charActions()
-    {
 
-        if (Engine.GetKeyHeld(Key.A)) // && charLocation.X > 0)
-        {
-            charRight = Engine.LoadTexture("charL.png");
 
-            if (charLocation.X < 0)
-            {
-                charLocation.X = 300;
-            }
-            charLocation.X = charLocation.X - 5;
-        }
-        if (Engine.GetKeyHeld(Key.D)) //&& charLocation.X < 290)
-        {
-            charRight = Engine.LoadTexture("charR.png");
 
-            if (charLocation.X > 300)
-            {
-                charLocation.X = 0;
-            }
-            charLocation.X = charLocation.X + 5;
-            Console.WriteLine("D pressed");
-        }
-        if (Engine.GetKeyHeld(Key.S))
-        {
-            charLocation.Y = charLocation.Y + 5;
-        }
-        if (Engine.GetKeyHeld(Key.W))
-        {
-            charLocation.Y = charLocation.Y - 10;
-        }
-        if (Engine.GetKeyDown(Key.Space))
-        {
-            charRight = Engine.LoadTexture("shoot.png");
-            Vector2 temp = new Vector2();
-            temp = charLocation;
-            temp.Y = temp.Y - 2;
-            temp.X = temp.X + 15;
-            bullets.Add(temp);
-        }
-    }*/
 
-    public void breakPlatform()
-    {
-        Random random = new System.Random();
-        for (int i = 0; i < brokenPlatforms.Count; i++)
-        {
-            Vector2 platformV = platforms[i].getVector();
-            if ((Math.Abs(mainCharacter.getLocation().X - platformV.X) <= 40 && Math.Abs(mainCharacter.getLocation().Y - platformV.Y) <= 29) && random.Next(0, 100) > 80)
-            {
-                brokenPlatforms.RemoveAt(i);
-                return;
-            }
-        }
-    }
 
+    /// <summary>
+    /// moving all the bullets in the "bullets" array up so that they reach the enemy
+    /// after the bullets reach a certain height, make sure they get removed so they don't take more memory
+    /// </summary>
     public void moveBulletUp()
     {
         Vector2 temp = new Vector2();
@@ -337,6 +548,11 @@ class Game
         }
     }
 
+
+    /// <summary>
+    /// checking to make sure the enemy is dead from bullet, needed to make sure that the bullets work and if the enemy dies from them
+    /// work throughout the entire bullets and enemies array to make sure nothing is missed 
+    /// </summary>
     public void checkEnemyDead()
     {
         if (!death) {
@@ -354,35 +570,38 @@ class Game
                     {
                         currentEnemy = (Vector2)enemies[j].getLocation();
                     }
-                    //if (enemies.Count > 0 && bullets.Count > 0)
-                    // {
-                    if ((enemies.Count > 0 && bullets.Count > 0) && (currentBullet.Y - currentEnemy.Y < 40 && currentBullet.X - currentEnemy.X < 40 && currentEnemy.X - currentBullet.X > -9))
+                    if ((enemies.Count > 0 && bullets.Count > 0) && (currentBullet.Y - currentEnemy.Y < 40 && currentBullet.X - currentEnemy.X < 40 && currentBullet.X - currentEnemy.X > -9))
                     {
                         bullets.RemoveAt(i);
                         i--;
                         enemies.RemoveAt(j);
                         j--;
                     }
-                    // }
                 }
             }
         }
     }
 
-    public void movePlatsDown()
+    /// <summary>
+    /// moving all the game elements down x distance
+    /// needs to be called when the player is above a certain height in the game
+    /// delete the game element after they reach a point in the coordinate plane to not use extra memory
+    /// </summary>
+    /// <param name="distance"></param>
+    public void movePlatsDown(int distance)
     {
         for (int i = 0; i < platforms.Count; i++)
         {
             Platform temp = platforms[i];
             Vector2 tempVec = temp.getVector();
-            tempVec.Y = tempVec.Y + 10;
+            tempVec.Y = tempVec.Y + distance;
             platforms[i] = new Platform(tempVec);
         }
 
         for (int i = 0; i < enemies.Count; i++)
         {
             Vector2 temp = (Vector2)enemies[i].getLocation();
-            temp.Y = temp.Y + 10;
+            temp.Y = temp.Y + distance;
             Enemy newEnemy = new Enemy();
             newEnemy.setLocation(temp);
             enemies[i] = newEnemy;
@@ -391,11 +610,33 @@ class Game
         for (int i = 0; i < trampolines.Count; i++)
         {
             Vector2 temp = (Vector2)trampolines[i];
-            temp.Y = temp.Y + 10;
+            temp.Y = temp.Y + distance;
             trampolines[i] = temp;
+        }
+
+        for (int i = 0; i < flyingCaps.Count; i++)
+        {
+            Vector2 temp = (Vector2)flyingCaps[i];
+            temp.Y = temp.Y + distance;
+            flyingCaps[i] = temp;
+        }
+
+        for (int i = 0; i < shields.Count; i++)
+        {
+            Vector2 temp = (Vector2)shields[i];
+            temp.Y = temp.Y + distance;
+            shields[i] = temp;
         }
     }
 
+
+
+    /// <summary>
+    /// make the random platforms
+    /// on top of platforms start to add powerups and enemies
+    /// ensure that there is no more than one thing per platform 
+    /// Platforms should all be reachable by the player in all situations  
+    /// </summary>
     public void makePlatforms()
     {
         Random random = new System.Random();
@@ -406,9 +647,9 @@ class Game
             temp1 = platforms[platforms.Count - 1].getVector();
             int yLoc = (int)temp1.Y;
             int xLoc = (int)temp1.X;
-            int newY = random.Next(yLoc - 125, yLoc - 50);
+            int newY = random.Next(yLoc - 120, yLoc - 50);
             int tempX = random.Next(0, 280);
-            while(Math.Abs(xLoc - tempX) < 30)
+            while (Math.Abs(xLoc - tempX) < 30)
             {
                 tempX = random.Next(0, 280);
             }
@@ -416,9 +657,13 @@ class Game
             platforms.Add(new Platform(new Vector2(newX, newY)));
             platforms.RemoveAt(0);
 
-            int enemyProb = random.Next(0, 100);
-            int trampolineProb = random.Next(0, 100);
+            double enemyProb = random.Next(0, 100) / difficulty / difficultyBasedOnChar;
+            double trampolineProb = random.Next(0, 100) * difficulty * difficultyBasedOnChar;
+            double shieldProb = random.Next(0, 100) * difficulty * difficultyBasedOnChar;
+            double capProb = random.Next(0, 100) * difficulty * difficultyBasedOnChar;
             Boolean trampPresent = false;
+            Boolean enemyPresent = false;
+            Boolean capPresent = false;
 
             if (trampolineProb < 20)
             {
@@ -427,19 +672,92 @@ class Game
                 trampPresent = true;
             }
 
-            if (enemyProb < 20 && yLoc - newY > 70 && !trampPresent && Math.Abs(xLoc - newX) < 60)//  && yLoc - newY < -40)// && !trampPresent)
+            if (capProb < 10 && trampPresent == false)
+            {
+                Vector2 capTemp = new Vector2(newX + 5, newY - 10);
+                flyingCaps.Add(capTemp);
+                capPresent = true;
+            }
+
+            if (enemyProb < 40 && yLoc - newY > 70 && !trampPresent && Math.Abs(xLoc - newX) < 60 && !capPresent)
             {
                 Vector2 enemyTemp = new Vector2(newX, newY - 40);
                 Enemy temp = new Enemy();
                 temp.setLocation(enemyTemp);
                 enemies.Add(temp);
+                enemyPresent = true;
             }
-            trampPresent = false;
 
-            
+            if (shieldProb < 20 && !trampPresent && !enemyPresent && !capPresent)
+            {
+                Vector2 shieldTemp = new Vector2(newX, newY - 40);
+                shields.Add(shieldTemp);
+            }
+
+            trampPresent = false;
+            enemyPresent = false;
+            capPresent = false;
+
+
         }
     }
 
+
+
+    /// <summary>
+    /// Making bubba appear in the game after a certain time based on score so that the game becomes harder and more distracting
+    /// if player has shield, make the shield disappear. Player should still be alive.
+    /// </summary>
+    public void bubbaBoss()
+    {
+        if (score > 4000 && score % 3000 > 0 && score % 3000 < 2000)
+        {
+            bubbaActive = true;
+            if (bossLocation.X > 310)
+            {
+                bossDirectionRight = false;
+            }
+
+            if (bossLocation.X < 10)
+            {
+                bossDirectionRight = true;
+            }
+
+            if (bossDirectionRight == true)
+            {
+                bossLocation.X += 3;
+            }
+            else
+            {
+                bossLocation.X -= 3;
+            }
+            Engine.DrawTexture(bossEnemy, bossLocation);
+
+            if (!flying && !trampJump && !shieldOn && Math.Abs(bossLocation.X - mainCharacter.getLocation().X) < 50 && Math.Abs(bossLocation.X - mainCharacter.getLocation().X) > 0 && Math.Abs(bossLocation.Y - mainCharacter.getLocation().Y) > 0 && Math.Abs(bossLocation.Y - mainCharacter.getLocation().Y) < 50)
+            {
+                death = true;
+                Console.WriteLine("CharPosition x = " + mainCharacter.getLocation().X + " y = " + mainCharacter.getLocation().Y);
+                Console.WriteLine("Bubba Pos x = " + bossLocation.X + " y = " + bossLocation.Y);
+            }
+
+            if (shieldOn && !flying && !trampJump && Math.Abs(bossLocation.X - mainCharacter.getLocation().X) < 50 && Math.Abs(bossLocation.X - mainCharacter.getLocation().X) > 0 && Math.Abs(bossLocation.Y - mainCharacter.getLocation().Y) > 0 && Math.Abs(bossLocation.Y - mainCharacter.getLocation().Y) < 50)
+            {
+                score += 1000;
+                shieldOn = false;
+            }
+        }
+        else
+        {
+            bubbaActive = false;
+        }
+    }
+
+
+
+    /// <summary>
+    /// check if the character is hitting the platform and return a boolean so that it can be used in the jumping algorithm
+    /// Have offsets of 40 becasue of size
+    /// </summary>
     public Boolean hitting(Vector2 charLocation, List<Platform> platforms)
     {
         if (!death || !trampJump)
@@ -447,7 +765,7 @@ class Game
 
             foreach (Platform platform in platforms)
             {
-                if (Math.Abs(charLocation.X - platform.getVector().X) <= 40 && charLocation.Y - platform.getVector().Y <= -30 && charLocation.Y - platform.getVector().Y >= -40)
+                if (Math.Abs(charLocation.X - platform.getVector().X) <= 40 && charLocation.Y - platform.getVector().Y <= -35 && charLocation.Y - platform.getVector().Y >= -40)
                 {
                     return true;
                 }
@@ -456,13 +774,18 @@ class Game
         return false;
     }
 
-    //still temporarily needed for trampolines
-    public Boolean hittingTramp(Vector2 charLocation, ArrayList platforms)
+
+    /// <summary>
+    /// functionality for after the character has hit the trampoline
+    /// check if death is not true so that other functionality in the game is not impeded 
+    /// return true so that the code can use it in the jumping functions
+    /// </summary>
+    public Boolean hittingTramp(Vector2 charLocation, ArrayList tramps)
     {
         if (!death)
         {
             {
-                foreach (Vector2 platform in platforms)
+                foreach (Vector2 platform in tramps)
                 {
                     if (Math.Abs(charLocation.X - platform.X) <= 40 && Math.Abs(charLocation.Y - platform.Y) <= 29)
                     {
@@ -475,39 +798,95 @@ class Game
         return false;
     }
 
+
+
+    /// <summary>
+    /// functionality for after the character has hit the cap
+    /// check if death and trampjump are not true so that other functionality in the game is not impeded 
+    /// return true so that the code can use it in the jumping functions
+    /// </summary>
+    
+    public Boolean hittingCap(Vector2 charLocation, ArrayList caps)
+    {
+        int i = 0;
+        if (!death || !trampJump)
+        {
+            {
+                foreach (Vector2 platform in caps)
+                {
+
+                    i++;
+                    if (Math.Abs(charLocation.X - platform.X) <= 40 && Math.Abs(charLocation.Y - platform.Y) <= 40 && !jump)
+                    {
+                        Console.WriteLine("hit cap");
+                        caps.RemoveAt(i-1);
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// implementing functionality for after the character has been hit by enemy and game needs to start ending
+    /// however, if the character has a shield, only remove the shield and enemy, but let the character live
+    /// </summary>
     public void charHittingEnemy()
     {
         int charX = (int)mainCharacter.getLocation().X;
         int charY = (int)mainCharacter.getLocation().Y;
+        Boolean removed = false;
+        int enemyNum = -1;
 
-        if (!trampJump)
+        if (!trampJump && !flying)
         {
+            
             foreach (Enemy enemy in enemies)
             {
                 int enemyX = (int)enemy.getLocation().X;
                 int enemyY = (int)enemy.getLocation().Y;
 
-                if (Math.Abs(enemyX - charX) < 40 && Math.Abs(enemyY - charY) < 40)
+                if (Math.Abs(enemyX - charX) < 40 && Math.Abs(enemyY - charY) < 10)
                 {
-                    //charHitEnemy();
-                    death = true;
-                    jump = false;
+                    if (!shieldOn && !shieldCooldown)
+                    {
+                        charHitEnemy();
+                        death = true;
+                        jump = false;
+                   
+                    }
+                    else
+                    {
+                        shieldOn = false;
+                        shieldCooldown = true;
+                        removed = true;
+                    }
                 }
+                enemyNum++;
             }
         }
-        //return false;
+        if (removed)
+        {
+            enemies.RemoveAt(enemyNum);
+        }
 
     }
 
+
+    /// <summary>
+    /// functionality for after the character has hit the enemy. At this point the game starts to end and go to the end screen
+    /// </summary>
     public void charHitEnemy()
     {
-        while(mainCharacter.getLocation().Y < 490)
+        Engine.PlaySound(deadSound, false, 0);
+        while (mainCharacter.getLocation().Y < Resolution.Y)
         {
-            //int charCurrentX = (int)mainCharacter.getLocation().X;
             int charCurrentY = (int)mainCharacter.getLocation().Y;
 
             mainCharacter.setYLoc(charCurrentY - 10);
-            
+
 
 
             break;
@@ -515,6 +894,31 @@ class Game
         }
     }
 
-    
 
+
+    /// <summary>
+    /// check if the player is hitting the shield, if yes --> provide the character with the shield for future use
+    /// </summary>
+    public void charHittingShield()
+    {
+        int charX = (int)mainCharacter.getLocation().X;
+        int charY = (int)mainCharacter.getLocation().Y;
+        if (!death)
+        {
+            Vector2 currentShield;
+            for(int i = 0; i < shields.Count; i++)
+            {
+                currentShield = (Vector2)shields[i];
+                if (Math.Abs(charX - currentShield.X) <= 40 && charY - currentShield.Y <= -30 && charY - currentShield.Y >= -40 && !shieldOn)
+                {
+                    shieldOn = true;
+                    Engine.DrawTexture(shieldForChar, mainCharacter.getLocation());
+                    Console.WriteLine("has shield");
+                    shields.RemoveAt(i);
+                    return;
+                    
+                }
+            }
+        }
+    }
 }
