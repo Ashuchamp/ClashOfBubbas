@@ -331,20 +331,17 @@ class Game
 
         
                 //breakPlatform();
-            }
-        }
-        if(!death)
-        {
-            bubbaBoss();
-        }
-        charHittingShield();
-        if (shieldOn)
-        {
-            Vector2 temp = mainCharacter.getLocation();
-            temp.X -= 3;
-            temp.Y -= 3;
-            Engine.DrawTexture(shieldForChar, temp);
+                bubbaBoss();
+                charHittingShield();
+                if (shieldOn)
+                {
+                    Vector2 temp = mainCharacter.getLocation();
+                    temp.X -= 3;
+                    temp.Y -= 3;
+                    Engine.DrawTexture(shieldForChar, temp);
 
+                }
+            }
         }
     }
 
