@@ -423,7 +423,7 @@ class Game
                     Engine.PlaySound(jumpSound, false, 0);
 
                 }
-                if (count < 25 && jump == true)// && !trampJump)
+                if (count < 25 && jump == true && !trampJump)
                 {
                     double x;
                     x = mainCharacter.getLocation().Y - 5;
@@ -439,15 +439,15 @@ class Game
                 }
             }
 
-            if ((trampJump || hittingTramp(mainCharacter.getLocation(), trampolines)) && !flying)
+            if ((trampJump || hittingTramp(mainCharacter.getLocation(), trampolines)) && !flying && !jump)
             {
                 Console.WriteLine("inside tramp");
                 trampJump = true;
-                if (count < 25 && trampJump == true && !jump)
+                if (count < 20 && trampJump == true && !jump)
                 {
                     double x;
-                    x = mainCharacter.getLocation().Y - 10;
-                    height += 10;
+                    x = mainCharacter.getLocation().Y - 15;
+                    height += 15;
                     mainCharacter.newYPos((float)x);
                     System.Threading.Thread.Sleep(10);
                     count++;
@@ -504,8 +504,8 @@ class Game
                 } */
                 else if (trampJump)
                 {
-                    mainCharacter.setYLoc(10);
-                    movePlatsDown(15);
+                    mainCharacter.setYLoc(15);
+                    movePlatsDown(20);
                 }
                 else if (flying)
                 {
@@ -688,7 +688,7 @@ class Game
             temp1 = platforms[platforms.Count - 1].getVector();
             int yLoc = (int)temp1.Y;
             int xLoc = (int)temp1.X;
-            int newY = random.Next(yLoc - 125, yLoc - 50);
+            int newY = random.Next(yLoc - 120, yLoc - 50);
             int tempX = random.Next(0, 280);
             while (Math.Abs(xLoc - tempX) < 30)
             {
@@ -720,7 +720,7 @@ class Game
                 capPresent = true;
             }
 
-            if (enemyProb < 20 && yLoc - newY > 70 && !trampPresent && Math.Abs(xLoc - newX) < 60 && !capPresent)//  && yLoc - newY < -40)// && !trampPresent)
+            if (enemyProb < 40 && yLoc - newY > 70 && !trampPresent && Math.Abs(xLoc - newX) < 60 && !capPresent)//  && yLoc - newY < -40)// && !trampPresent)
             {
                 Vector2 enemyTemp = new Vector2(newX, newY - 40);
                 Enemy temp = new Enemy();
@@ -762,11 +762,11 @@ class Game
 
             if (bossDirectionRight == true)
             {
-                bossLocation.X += 5;
+                bossLocation.X += 3;
             }
             else
             {
-                bossLocation.X -= 5;
+                bossLocation.X -= 3;
             }
             Engine.DrawTexture(bossEnemy, bossLocation);
 
