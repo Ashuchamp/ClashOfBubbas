@@ -29,6 +29,7 @@ class Game
     //readonly Texture Tplat3 = Engine.LoadTexture("plat.png");
 
     readonly Texture background = Engine.LoadTexture("background.png");
+    readonly Texture nightSky = Engine.LoadTexture("nightSky.png");
     readonly Texture endBackground = Engine.LoadTexture("endBackground.png");
     readonly Texture homeBackground = Engine.LoadTexture("homeBackground.png");
 
@@ -55,6 +56,7 @@ class Game
     Boolean homeScreen = true;
     Boolean characterScreen = false;
     Boolean pause = false;
+    Boolean bubbaActive = false;
     double difficulty = 1;
     int charSelect = 1;
 
@@ -257,8 +259,14 @@ class Game
                         shieldCoolTimer++;
                     }
                 }
-
-                Engine.DrawTexture(background, bck);
+                if(bubbaActive)
+                {
+                    Engine.DrawTexture(nightSky, bck);
+                }
+                else
+                {
+                    Engine.DrawTexture(background, bck);
+                }
                 Engine.DrawTexture(mainCharacter.getCharTexture(), mainCharacter.getLocation());
                 //Engine.DrawTexture(Tplat1, plat1);
                 //Engine.DrawTexture(Tplat1, plat2);
@@ -370,6 +378,7 @@ class Game
         compiled = false;
         characterScreen = false;
         pause = false;
+        bubbaActive = false;
     }
     public void shootingBullet()
     {
@@ -736,9 +745,9 @@ class Game
 
     public void bubbaBoss()
     {
-        if (score > 4000 && score % 3000 > 0 && score % 3000 < 2000)
+        if (score > 200 && score % 3000 > 0 && score % 3000 < 2000)
         {
-
+            bubbaActive = true;
             if (bossLocation.X > 310)
             {
                 bossDirectionRight = false;
@@ -774,6 +783,10 @@ class Game
                 score += 1000;
                 shieldOn = false;
             }
+        }
+        else
+        {
+            bubbaActive = false;
         }
     }
 
