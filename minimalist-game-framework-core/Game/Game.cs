@@ -8,7 +8,7 @@ class Game
     public static readonly Vector2 Resolution = new Vector2(320, 480);
 
     Texture charRight = Engine.LoadTexture("charR.png");
-    readonly Texture charLeft = Engine.LoadTexture("charL.png");
+    readonly Texture charLeft = Engine.LoadTexture("bubba.png");
     readonly Texture Tplat1 = Engine.LoadTexture("plat.png");
     readonly Texture customPlatT = Engine.LoadTexture("plat1.png");
     readonly Texture bulletPic = Engine.LoadTexture("bullet.png");
@@ -25,6 +25,7 @@ class Game
     readonly Texture background = Engine.LoadTexture("background.png");
     readonly Texture endBackground = Engine.LoadTexture("endBackground.png");
     readonly Texture homeBackground = Engine.LoadTexture("homeBackground.png");
+    readonly Texture bossEnemy = Engine.LoadTexture("bubbaEnemy.png");
     readonly Sound deadSound = Engine.LoadSound("Cat-sound-mp3.mp3");
     readonly Sound shootSound = Engine.LoadSound("shoot.mp3");
     readonly Sound jumpSound = Engine.LoadSound("jump.mp3");
@@ -56,6 +57,8 @@ class Game
     Vector2 finalScoreVec = new Vector2(70, 210);
 
     Vector2 scoreBoardHeadVec = new Vector2(10, 225);
+
+    Vector2 bossLocation = new Vector2(5, 20);
 
     int time = 0;
     //    public void plats()
@@ -90,12 +93,14 @@ class Game
     {
         sb = new ScoreBoard();
         lastPlatY = 470;
+        
     }
 
     Character mainCharacter = new Character();
 
     public void Update()
     {
+        bubbaBoss();
         difficulty = score * 0.0001 + 1;
         if(mainCharacter.getLocation().Y >= 480)
         {
@@ -379,7 +384,7 @@ class Game
                     mainCharacter.setYLoc(5);
                     movePlatsDown(10);
                 }
-                /*else
+                /*elsemakepl
                 {
                     //mainCharacter.setYLoc(15);
                     movePlatsDown(10);
@@ -570,7 +575,7 @@ class Game
             temp1 = platforms[platforms.Count - 1].getVector();
             int yLoc = (int)temp1.Y;
             int xLoc = (int)temp1.X;
-            int newY = random.Next(yLoc - 125, yLoc - 50);
+            int newY = random.Next(yLoc - 119, yLoc - 50);
             int tempX = random.Next(0, 280);
             while (Math.Abs(xLoc - tempX) < 30)
             {
@@ -681,6 +686,26 @@ class Game
         }
 
         return false;
+    }
+    /// <summary>
+    /// /////////////////////////////////////////////////////////////////
+    /// </summary>
+    public void bubbaBoss()
+    {
+        if (score % 3000 > 0 && score%3000 < 1500)
+        {
+            if (bossLocation.X > 310)
+            {
+                bossLocation.X -= 10;
+            }
+
+            if (bossLocation.X < 0)
+            {
+                bossLocation.X += 10;
+            }
+
+            Engine.DrawTexture(bossEnemy, bossLocation);
+        }
     }
 
     public void charHittingEnemy()

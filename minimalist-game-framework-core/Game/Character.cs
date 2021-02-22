@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 class Character
 {
-    Texture charTexture = Engine.LoadTexture("charR.png");
+    Texture charTexture = Engine.LoadTexture("bubba.png");
     //readonly Texture charLeft = Engine.LoadTexture("charL.png");
     //readonly Texture shoot = Engine.LoadTexture("shoot.png");
     private Vector2 charLocation;
