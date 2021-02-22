@@ -69,7 +69,7 @@ class Game
     Vector2 finalScoreVec = new Vector2(70, 210);
 
     Vector2 scoreBoardHeadVec = new Vector2(10, 225);
-    Vector2 bossLocation = new Vector2(5, 40);
+    Vector2 bossLocation = new Vector2(5, 60);
 
 
     int time = 0;
