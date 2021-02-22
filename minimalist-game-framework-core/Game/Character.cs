@@ -66,7 +66,7 @@ class Character
         {
             charTexture = Engine.LoadTexture("char" + numTexture + "L.png");
 
-            if (charLocation.X < 0)
+            if (charLocation.X < -5)
             {
                 charLocation.X = 300;
             }
@@ -76,7 +76,7 @@ class Character
         {
             charTexture = Engine.LoadTexture("char" + numTexture + "R.png");
 
-            if (charLocation.X > 300)
+            if (charLocation.X > 305)
             {
                 charLocation.X = 0;
             }

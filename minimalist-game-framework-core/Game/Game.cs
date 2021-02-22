@@ -8,7 +8,7 @@ class Game
     public static readonly Vector2 Resolution = new Vector2(320, 480);
     //Texture charRight = Engine.LoadTexture("charR.png");
 
-    readonly Texture bubba = Engine.LoadTexture("bubba.png");
+    readonly Texture bubba = Engine.LoadTexture("char4R.png");
     readonly Texture Tplat1 = Engine.LoadTexture("plat.png");
     readonly Texture customPlatT = Engine.LoadTexture("plat1.png");
     readonly Texture bulletPic = Engine.LoadTexture("bullet.png");
@@ -18,10 +18,10 @@ class Game
     readonly Texture shieldTex = Engine.LoadTexture("shield.png");
     readonly Texture shieldForChar = Engine.LoadTexture("shieldForChar.png");
     readonly Texture bossEnemy = Engine.LoadTexture("bubbaEnemy.png");
-    /*readonly Texture char1Zoom = Engine.LoadTexture("char1RZoom.png");
-    readonly Texture char2Zoom = Engine.LoadTexture("char2RZoom.png");
-    readonly Texture char3Zoom = Engine.LoadTexture("char3RZoom.png");
-    readonly Texture char4Zoom = Engine.LoadTexture("char4RZoom.png");*/
+    readonly Texture char1Zoom = Engine.LoadTexture("char1Zoom.png");
+    readonly Texture char2Zoom = Engine.LoadTexture("char2Zoom.png");
+    readonly Texture char3Zoom = Engine.LoadTexture("char3Zoom.png");
+    //readonly Texture char4Zoom = Engine.LoadTexture("char4Zoom.png");
     readonly Font font = Engine.LoadFont("FiraCode-Medium.ttf", pointSize: 20);
     readonly Font scoreFont = Engine.LoadFont("FiraCode-Medium.ttf", pointSize: 12);
     readonly Font pauseFont = Engine.LoadFont("FiraCode-Medium.ttf", pointSize: 8);
@@ -55,6 +55,7 @@ class Game
     Boolean characterScreen = false;
     Boolean pause = false;
     double difficulty = 1;
+    int charSelect = 1;
 
     Vector2 plat1 = new Vector2(100, 300);
 
@@ -143,6 +144,7 @@ class Game
             {
                 reset();
                 homeScreen = true;
+                charSelect = 1;
             } 
         }
         else if(homeScreen)
@@ -161,41 +163,53 @@ class Game
                 characterScreen = true;
             }
         }
-        /*else if(characterScreen)
+        else if(characterScreen)
         {
             Engine.DrawTexture(background, bck);
-            Engine.DrawString("If you are ready to play, press the 'S' key to begin!", new Vector2(2, 420), Color.Black, font);
-            Vector2 charScreenLoc = new Vector2(100, 200);
-            if(Engine.GetKeyHeld(Key.NumRow1))
+            Engine.DrawString("If you are ready to play, press the 'S' key!", new Vector2(2, 420), Color.Black, scoreFont);
+            Vector2 char1Loc = new Vector2(80, 200);
+            Vector2 char2Loc = new Vector2(-20, 190);
+            Vector2 char3Loc = new Vector2(40, 180);
+            if(Engine.GetKeyDown(Key.NumRow1))
             {
-                mainCharacter.setTexture(1);
-                //draw corresponding Char Texture
-                Engine.DrawTexture(char1Zoom, charScreenLoc);
+                charSelect = 1;
             }
-            if(Engine.GetKeyHeld(Key.NumRow2))
+            if(Engine.GetKeyDown(Key.NumRow2))
             {
-                mainCharacter.setTexture(2);
-                Engine.DrawTexture(char2Zoom, charScreenLoc);
-                difficulty = 1.5;
+                charSelect = 2;
+                //difficulty = 1.5;
             }
-            if(Engine.GetKeyHeld(Key.NumRow3))
+            if(Engine.GetKeyDown(Key.NumRow3))
             {
-                mainCharacter.setTexture(3);
-                Engine.DrawTexture(char3Zoom, charScreenLoc);
-                difficulty = 2;
+                charSelect = 3;
+                //difficulty = 2;
             }
-            if(Engine.GetKeyHeld(Key.NumRow4))
+            /*if(Engine.GetKeyHeld(Key.NumRow4))
             {
-                mainCharacter.setTexture(4);
-                Engine.DrawTexture(char4Zoom, charScreenLoc);
                 difficulty = 4;
+            }*/
+            mainCharacter.setTexture(charSelect);
+            if(charSelect == 2)
+            {
+                Engine.DrawTexture(char2Zoom, char2Loc);
+            }
+            else if(charSelect == 3)
+            {
+                Engine.DrawTexture(char3Zoom, char3Loc);
+            }
+            /*else if(charSelect == 4)
+            {
+                Engine.DrawTexture(char4Zoom, charScreenLoc);
+            }*/
+            else
+            {
+                Engine.DrawTexture(char1Zoom, char1Loc);
             }
             if(Engine.GetKeyHeld(Key.S))
             {
-                homeScreen = false;
-                alreadyUpdatedScores = false;
+                characterScreen = false;
             }
-        }*/
+        }
         else
         {
             if(pause)
@@ -316,7 +330,10 @@ class Game
                 //breakPlatform();
             }
         }
-        bubbaBoss();
+        if(!death)
+        {
+            bubbaBoss();
+        }
         if (shieldOn)
         {
             Vector2 temp = mainCharacter.getLocation();
@@ -344,6 +361,7 @@ class Game
         time = 0;
         trampJump = false;
         flying = false;
+        shieldOn = false;
         //lastPlatY = 470;
         mainCharacter = new Character();
         height = 0;
