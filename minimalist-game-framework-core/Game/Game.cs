@@ -150,8 +150,8 @@ class Game
         else if(homeScreen)
         {
             Engine.DrawTexture(homeBackground, bck);
-            Engine.DrawString("Emergency Key: Press 'P' to pause the game!", new Vector2(2, 425), Color.DarkRed, pauseFont);
-            Engine.DrawString("Press the right arrow to go to the character selection screen.", new Vector2(2, 435), Color.Black, pauseFont);
+            Engine.DrawString("Emergency Key: Press 'P' to pause the game!", new Vector2(2, 430), Color.DarkRed, pauseFont);
+            Engine.DrawString("Press the right arrow to go to the character selection screen.", new Vector2(2, 445), Color.Black, pauseFont);
             if(Engine.GetKeyHeld(Key.S))
             {
                 homeScreen = false;
@@ -166,6 +166,7 @@ class Game
         else if(characterScreen)
         {
             Engine.DrawTexture(background, bck);
+            Engine.DrawString("Press 1, 2, 3, or 4 to switch your character!", new Vector2(2, 157), Color.Black, scoreFont);
             Engine.DrawString("If you are ready to play, press the 'S' key!", new Vector2(2, 420), Color.Black, scoreFont);
             Vector2 char1Loc = new Vector2(80, 200);
             Vector2 char2Loc = new Vector2(-20, 190);
@@ -735,7 +736,7 @@ class Game
 
     public void bubbaBoss()
     {
-        if (score > 4000 && score % 3000 > 0 && score % 3000 < 2000)
+        if (score > 200 && score % 3000 > 0 && score % 3000 < 2000)
         {
 
             if (bossLocation.X > 310)
@@ -763,6 +764,7 @@ class Game
             if (!flying && !trampJump && !shieldOn && Math.Abs(bossLocation.X - mainCharacter.getLocation().X) < 80 && Math.Abs(bossLocation.X - mainCharacter.getLocation().X) > 0 && Math.Abs(bossLocation.X - mainCharacter.getLocation().Y) > 0 && Math.Abs(bossLocation.X - mainCharacter.getLocation().Y) < 50)
             {
                 death = true;
+                Engine.StopMusic(1);
             }
 
             if (shieldOn)
@@ -770,9 +772,6 @@ class Game
                 score += 1000;
                 shieldOn = false;
             }
-
-
-
         }
     }
 
@@ -855,6 +854,7 @@ class Game
                     {
                         charHitEnemy();
                         death = true;
+                        Engine.StopMusic(1);
                         jump = false;
                    
                     }
