@@ -742,7 +742,7 @@ class Game
             }
             Engine.DrawTexture(bossEnemy, bossLocation);
 
-            if (!shieldOn && Math.Abs(bossLocation.X - mainCharacter.getLocation().X) < 80 && Math.Abs(bossLocation.X - mainCharacter.getLocation().X) > 0 && Math.Abs(bossLocation.X - mainCharacter.getLocation().Y) > 0 && Math.Abs(bossLocation.X - mainCharacter.getLocation().Y) < 50)
+            if (!flying && !trampJump && !shieldOn && Math.Abs(bossLocation.X - mainCharacter.getLocation().X) < 80 && Math.Abs(bossLocation.X - mainCharacter.getLocation().X) > 0 && Math.Abs(bossLocation.X - mainCharacter.getLocation().Y) > 0 && Math.Abs(bossLocation.X - mainCharacter.getLocation().Y) < 50)
             {
                 death = true;
             }
