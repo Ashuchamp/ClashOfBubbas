@@ -7,6 +7,7 @@ class Game
     public static readonly string Title = "Minimalist Game Framework";
     public static readonly Vector2 Resolution = new Vector2(320, 480);
 
+    readonly Texture bubba = Engine.LoadTexture("bubba.png");
     readonly Texture Tplat1 = Engine.LoadTexture("plat.png");
     readonly Texture customPlatT = Engine.LoadTexture("plat1.png");
     readonly Texture bulletPic = Engine.LoadTexture("bullet.png");
@@ -14,6 +15,8 @@ class Game
     readonly Texture capText = Engine.LoadTexture("flyingCap.png");
     readonly Texture trampolineTex = Engine.LoadTexture("trampoline.png");
     readonly Texture shieldTex = Engine.LoadTexture("shield.png");
+    readonly Texture shieldForChar = Engine.LoadTexture("shieldForChar.png");
+    readonly Texture bossEnemy = Engine.LoadTexture("bubbaEnemy.png");
     /*readonly Texture char1Zoom = Engine.LoadTexture("char1RZoom.png");
     readonly Texture char2Zoom = Engine.LoadTexture("char2RZoom.png");
     readonly Texture char3Zoom = Engine.LoadTexture("char3RZoom.png");
