@@ -7,6 +7,7 @@ class Game
     public static readonly string Title = "Minimalist Game Framework";
     public static readonly Vector2 Resolution = new Vector2(320, 480);
 
+    //loading pictures and sounds
     readonly Texture bubba = Engine.LoadTexture("char4R.png");
     readonly Texture Tplat1 = Engine.LoadTexture("plat.png");
     readonly Texture customPlatT = Engine.LoadTexture("plat1.png");
@@ -38,9 +39,8 @@ class Game
     readonly Sound backgroundSound1 = Engine.LoadSound("bMusic1.mp3");
     readonly Music backgroundSound2 = Engine.LoadMusic("bMusic2.mp3");
     readonly Texture shieldForChar = Engine.LoadTexture("shieldForChar.png");
-
-
     
+    //initializing objects, fields, and variables
     List<Platform> platforms = new List<Platform>();
     ArrayList trampolines = new ArrayList();
     ArrayList flyingCaps = new ArrayList();
@@ -70,9 +70,7 @@ class Game
     Vector2 scoreBoardHeadVec = new Vector2(10, 225);
     Vector2 bossLocation = new Vector2(5, 60);
 
-
     int time = 0;
-
 
     private ScoreBoard sb;
     private int height;
@@ -92,6 +90,7 @@ class Game
     Boolean bossDirectionRight = false;
 
     private int shieldCoolTimer;
+    //constructor
     public Game()
     {
         sb = new ScoreBoard();
@@ -103,10 +102,12 @@ class Game
     public void Update()
     {
         difficulty = score * 0.0001 + 1;
+        //if character falls below screen, character dies
         if(mainCharacter.getLocation().Y >= 480)
         {
             death = true;
         }
+        //death screen functionality
         if(death)
         {
             if (!alreadyUpdatedScores)
@@ -116,20 +117,22 @@ class Game
             Engine.StopMusic(1);
             alreadyUpdatedScores = true;
             Engine.DrawTexture(endBackground, bck);
-            Engine.DrawString(score.ToString(), finalScoreVec, Color.LightBlue, scoreFont);
+            Engine.DrawString(score.ToString(), finalScoreVec, Color.LightBlue, scoreFont); //draw player score
             Engine.DrawString("High Scores:", scoreBoardHeadVec, Color.LawnGreen, scoreFont);
             Vector2 currentVec = new Vector2(scoreBoardHeadVec.X, scoreBoardHeadVec.Y + 15);
             for (int i = 1; i <= 10; i++)
             {
-                Engine.DrawString(i + ": " + sb.getScore(i), currentVec, Color.Yellow, scoreFont);
+                Engine.DrawString(i + ": " + sb.getScore(i), currentVec, Color.Yellow, scoreFont); //draw top ten scores
                 currentVec.Y += 15;
             }
+            //'p' to play again
             if (Engine.GetKeyHeld(Key.P))
             {
                 int tempTexture = mainCharacter.getTextureNum();
-                reset();
+                reset(); //resets all variables and fields for new round
                 mainCharacter.setTexture(tempTexture);
             }
+            //'h' for home screen
             if(Engine.GetKeyHeld(Key.H))
             {
                 reset();
@@ -142,11 +145,13 @@ class Game
             Engine.DrawTexture(homeBackground, bck);
             Engine.DrawString("Emergency Key: Press 'P' to pause the game!", new Vector2(2, 430), Color.DarkRed, pauseFont);
             Engine.DrawString("Press the right arrow to go to the character selection screen.", new Vector2(2, 445), Color.Black, pauseFont);
+            //'s' to start game
             if(Engine.GetKeyHeld(Key.S))
             {
                 homeScreen = false;
                 alreadyUpdatedScores = false;
             }
+            //'right arrow' to go to character selection screen
             if(Engine.GetKeyHeld(Key.Right))
             {
                 homeScreen = false;
@@ -162,6 +167,7 @@ class Game
             Vector2 char2Loc = new Vector2(-20, 190);
             Vector2 char3Loc = new Vector2(40, 180);
             Vector2 char4Loc = new Vector2(90, 200);
+            //press '1', '2', '3', and '4' to switch between distinct characters with different difficulty levels
             if(Engine.GetKeyDown(Key.NumRow1))
             {
                 charSelect = 1;
@@ -198,6 +204,7 @@ class Game
             {
                 Engine.DrawTexture(char1Zoom, char1Loc);
             }
+            //'s' to start game
             if(Engine.GetKeyHeld(Key.S))
             {
                 characterScreen = false;
@@ -235,7 +242,7 @@ class Game
                 charHittingEnemy();
                 
 
-                //need to have some cool down after the sheild period is over
+                //need to have some cool down after the shield period is over
                 if(shieldCooldown)
                 {
                     if(shieldCoolTimer >= 50)
@@ -263,7 +270,8 @@ class Game
                 
 
 
-                //if this is the first time the code is running these are the basic variables that need to be defined for the game to run
+                /*if this is the first time the code is running these are the basic variables that need to be defined 
+                for the game to run*/
                 if (!compiled && !death)
                 {
                     lastPlatY = 470;
@@ -309,7 +317,7 @@ class Game
 
                 makePlatforms();
 
-                //making the character resopond to all the different keys it needs to 
+                //making the character respond to all the different keys it needs to 
                 if(Engine.GetKeyHeld(Key.A))
                 {
                     mainCharacter.respondToKey("A");
@@ -366,7 +374,6 @@ class Game
         trampJump = false;
         flying = false;
         shieldOn = false;
-        //lastPlatY = 470;
         mainCharacter = new Character();
         height = 0;
         score = 0;
@@ -476,7 +483,7 @@ class Game
 
 
 
-            //moving the game elements down every itteration based on the kind of jump jusrt accomplished 
+            //moving the game elements down every iteration based on the kind of jump just accomplished 
             if (mainCharacter.getLocation().Y < 100)
             {
                 
@@ -520,7 +527,7 @@ class Game
 
     /// <summary>
     /// moving all the bullets in the "bullets" array up so that they reach the enemy
-    /// after the bullets reach a certain height make sure they get removed so that it doesnt take more memory
+    /// after the bullets reach a certain height, make sure they get removed so they don't take more memory
     /// </summary>
     public void moveBulletUp()
     {
@@ -543,8 +550,8 @@ class Game
 
 
     /// <summary>
-    /// checking to make sure the enemy is dead from bullet, needed to make sure that the bullets work andf the enemy dies fromthem
-    /// work throught the entire bullets and enemies array to make sure nothing is missed 
+    /// checking to make sure the enemy is dead from bullet, needed to make sure that the bullets work and if the enemy dies from them
+    /// work throughout the entire bullets and enemies array to make sure nothing is missed 
     /// </summary>
     public void checkEnemyDead()
     {
@@ -578,7 +585,7 @@ class Game
     /// <summary>
     /// moving all the game elements down x distance
     /// needs to be called when the player is above a certain height in the game
-    /// delete the game elemenst after they reach a point in the cordinate plane to not use extra memeory
+    /// delete the game element after they reach a point in the coordinate plane to not use extra memory
     /// </summary>
     /// <param name="distance"></param>
     public void movePlatsDown(int distance)
@@ -627,8 +634,8 @@ class Game
     /// <summary>
     /// make the random platforms
     /// on top of platforms start to add powerups and enemies
-    /// ensure that there is no more than 1 thing per platform 
-    /// Platforms should all be rechable by the player in all situations  
+    /// ensure that there is no more than one thing per platform 
+    /// Platforms should all be reachable by the player in all situations  
     /// </summary>
     public void makePlatforms()
     {
@@ -698,9 +705,8 @@ class Game
 
 
     /// <summary>
-    /// Making bubba appear in the game after a certain time based on score so that the game becomes harder and more distracting 
-    /// 
-    /// if player has shield make the shield disapeewar and not kill the player
+    /// Making bubba appear in the game after a certain time based on score so that the game becomes harder and more distracting
+    /// if player has shield, make the shield disappear. Player should still be alive.
     /// </summary>
     public void bubbaBoss()
     {
@@ -749,7 +755,7 @@ class Game
 
 
     /// <summary>
-    /// check if the character is hitting the game and return a boolean so that it can be used in the jumping algorithm
+    /// check if the character is hitting the platform and return a boolean so that it can be used in the jumping algorithm
     /// Have offsets of 40 becasue of size
     /// </summary>
     public Boolean hitting(Vector2 charLocation, List<Platform> platforms)
@@ -770,9 +776,9 @@ class Game
 
 
     /// <summary>
-    /// functionality for after the character the character has hit the trampoline
-    /// check if death are not true so that other functionality in the game is not impeded 
-    /// return true so that the ciode can use it in the jumping
+    /// functionality for after the character has hit the trampoline
+    /// check if death is not true so that other functionality in the game is not impeded 
+    /// return true so that the code can use it in the jumping functions
     /// </summary>
     public Boolean hittingTramp(Vector2 charLocation, ArrayList tramps)
     {
@@ -795,9 +801,9 @@ class Game
 
 
     /// <summary>
-    /// functionality for after the character the character has hit the cap
-    /// check if deatrh and trampjump are not true so that other functionality in the game is not impeded 
-    /// return true so that the ciode can use it in the jumping
+    /// functionality for after the character has hit the cap
+    /// check if death and trampjump are not true so that other functionality in the game is not impeded 
+    /// return true so that the code can use it in the jumping functions
     /// </summary>
     
     public Boolean hittingCap(Vector2 charLocation, ArrayList caps)
@@ -824,8 +830,8 @@ class Game
     }
 
     /// <summary>
-    /// implementing funcationailty for after character has been hit by enemy and game needs to start ending
-    /// But if the character has a shield, only remove the shield and enemy but let the enemy live
+    /// implementing functionality for after the character has been hit by enemy and game needs to start ending
+    /// however, if the character has a shield, only remove the shield and enemy, but let the character live
     /// </summary>
     public void charHittingEnemy()
     {
@@ -870,7 +876,7 @@ class Game
 
 
     /// <summary>
-    /// functionality for after the character hit the enemy, at this point the starts to end and go to to the end screen
+    /// functionality for after the character has hit the enemy. At this point the game starts to end and go to the end screen
     /// </summary>
     public void charHitEnemy()
     {
@@ -891,7 +897,7 @@ class Game
 
 
     /// <summary>
-    /// check if the player is hitting the shield, if yes --> provide the character with the shield for further use
+    /// check if the player is hitting the shield, if yes --> provide the character with the shield for future use
     /// </summary>
     public void charHittingShield()
     {
