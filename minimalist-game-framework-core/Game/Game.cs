@@ -183,17 +183,17 @@ class Game
             if(Engine.GetKeyDown(Key.NumRow2))
             {
                 charSelect = 2;
-                //difficulty = 1.5;
+                difficultyBasedOnChar = (float)1.5;
             }
             if(Engine.GetKeyDown(Key.NumRow3))
             {
                 charSelect = 3;
-                //difficulty = 2;
+                difficultyBasedOnChar = (float)2;
             }
             if(Engine.GetKeyHeld(Key.NumRow4))
             {
                 charSelect = 4;
-                difficulty = 4;
+                difficultyBasedOnChar = (float)2.5;
             }
             mainCharacter.setTexture(charSelect);
             if(charSelect == 2)
