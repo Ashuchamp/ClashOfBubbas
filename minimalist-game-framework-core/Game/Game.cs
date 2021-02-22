@@ -16,7 +16,6 @@ class Game
     readonly Texture capText = Engine.LoadTexture("flyingCap.png");
     readonly Texture trampolineTex = Engine.LoadTexture("trampoline.png");
     readonly Texture shieldTex = Engine.LoadTexture("shield.png");
-    readonly Texture shieldForChar = Engine.LoadTexture("shieldForChar.png");
     readonly Texture bossEnemy = Engine.LoadTexture("bubbaEnemy.png");
     readonly Texture char1Zoom = Engine.LoadTexture("char1Zoom.png");
     readonly Texture char2Zoom = Engine.LoadTexture("char2Zoom.png");
@@ -39,6 +38,8 @@ class Game
     readonly Sound jumpSound = Engine.LoadSound("jump.mp3");
     readonly Sound backgroundSound1 = Engine.LoadSound("bMusic1.mp3");
     readonly Music backgroundSound2 = Engine.LoadMusic("bMusic2.mp3");
+    readonly Texture shieldForChar = Engine.LoadTexture("shieldForChar.png");
+
 
     //Vector2 charLocation = new Vector2(145, 440);
     //Vector2 platLocation = new Vector2(100, 300);
@@ -68,7 +69,7 @@ class Game
     Vector2 finalScoreVec = new Vector2(70, 210);
 
     Vector2 scoreBoardHeadVec = new Vector2(10, 225);
-    Vector2 bossLocation = new Vector2(5, 10);
+    Vector2 bossLocation = new Vector2(5, 40);
 
 
     int time = 0;
@@ -116,7 +117,7 @@ class Game
         if(mainCharacter.getLocation().Y >= 480)
         {
             death = true;
-            Engine.StopMusic(1);
+            //Engine.StopMusic(1);
         }
         if(death)
         {
@@ -124,6 +125,7 @@ class Game
             {
                 sb.modifyScoreBoard(score);
             }
+            Engine.StopMusic(1);
             alreadyUpdatedScores = true;
             Engine.DrawTexture(endBackground, bck);
             Engine.DrawString(score.ToString(), finalScoreVec, Color.LightBlue, scoreFont);
@@ -238,7 +240,7 @@ class Game
                     height -= 5;
                 }
                 charHittingEnemy();
-                charHittingShield();
+                //charHittingShield();
                 //charLocation.Y += 5;
 
                 if(shieldCooldown)
@@ -335,6 +337,7 @@ class Game
         {
             bubbaBoss();
         }
+        charHittingShield();
         if (shieldOn)
         {
             Vector2 temp = mainCharacter.getLocation();
@@ -736,7 +739,7 @@ class Game
 
     public void bubbaBoss()
     {
-        if (score > 200 && score % 3000 > 0 && score % 3000 < 2000)
+        if (score > 4000 && score % 3000 > 0 && score % 3000 < 2000)
         {
 
             if (bossLocation.X > 310)
@@ -761,13 +764,15 @@ class Game
             }
             Engine.DrawTexture(bossEnemy, bossLocation);
 
-            if (!flying && !trampJump && !shieldOn && Math.Abs(bossLocation.X - mainCharacter.getLocation().X) < 80 && Math.Abs(bossLocation.X - mainCharacter.getLocation().X) > 0 && Math.Abs(bossLocation.X - mainCharacter.getLocation().Y) > 0 && Math.Abs(bossLocation.X - mainCharacter.getLocation().Y) < 50)
+            if (!flying && !trampJump && !shieldOn && Math.Abs(bossLocation.X - mainCharacter.getLocation().X) < 50 && Math.Abs(bossLocation.X - mainCharacter.getLocation().X) > 0 && Math.Abs(bossLocation.Y - mainCharacter.getLocation().Y) > 0 && Math.Abs(bossLocation.Y - mainCharacter.getLocation().Y) < 50)
             {
                 death = true;
-                Engine.StopMusic(1);
+                //Engine.StopMusic(1);
+                Console.WriteLine("CharPosition x = " + mainCharacter.getLocation().X + " y = " + mainCharacter.getLocation().Y);
+                Console.WriteLine("Bubba Pos x = " + bossLocation.X + " y = " + bossLocation.Y);
             }
 
-            if (shieldOn)
+            if (shieldOn && !flying && !trampJump && Math.Abs(bossLocation.X - mainCharacter.getLocation().X) < 50 && Math.Abs(bossLocation.X - mainCharacter.getLocation().X) > 0 && Math.Abs(bossLocation.Y - mainCharacter.getLocation().Y) > 0 && Math.Abs(bossLocation.Y - mainCharacter.getLocation().Y) < 50)
             {
                 score += 1000;
                 shieldOn = false;
@@ -854,7 +859,7 @@ class Game
                     {
                         charHitEnemy();
                         death = true;
-                        Engine.StopMusic(1);
+                       // Engine.StopMusic(1);
                         jump = false;
                    
                     }
@@ -886,7 +891,7 @@ class Game
             int charCurrentY = (int)mainCharacter.getLocation().Y;
 
             mainCharacter.setYLoc(charCurrentY - 10);
-            Engine.StopMusic(1);
+            //Engine.StopMusic(1);
 
 
 
@@ -899,7 +904,7 @@ class Game
     {
         int charX = (int)mainCharacter.getLocation().X;
         int charY = (int)mainCharacter.getLocation().Y;
-        if (!death || !trampJump)
+        if (!death)// || !trampJump)
         {
             Vector2 currentShield;
             for(int i = 0; i < shields.Count; i++)
@@ -909,9 +914,11 @@ class Game
                 {
                     shieldOn = true;
                     Engine.DrawTexture(shieldForChar, mainCharacter.getLocation());
+                    Console.WriteLine("has shield");
                     shields.RemoveAt(i);
-                    i--;
-
+                    //shieldOn = true;
+                    return;
+                    
                 }
             }
         }
