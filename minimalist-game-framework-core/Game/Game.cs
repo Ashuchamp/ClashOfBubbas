@@ -7,24 +7,27 @@ class Game
     public static readonly string Title = "Minimalist Game Framework";
     public static readonly Vector2 Resolution = new Vector2(320, 480);
 
-    Texture charRight = Engine.LoadTexture("charR.png");
-    readonly Texture charLeft = Engine.LoadTexture("charL.png");
     readonly Texture Tplat1 = Engine.LoadTexture("plat.png");
     readonly Texture customPlatT = Engine.LoadTexture("plat1.png");
     readonly Texture bulletPic = Engine.LoadTexture("bullet.png");
-    readonly Texture enemyPic = Engine.LoadTexture("enemy1.png");
+    readonly Texture enemyPic = Engine.LoadTexture("enemy.png");
     readonly Texture capText = Engine.LoadTexture("flyingCap.png");
     readonly Texture trampolineTex = Engine.LoadTexture("trampoline.png");
     readonly Texture shieldTex = Engine.LoadTexture("shield.png");
+    /*readonly Texture char1Zoom = Engine.LoadTexture("char1RZoom.png");
+    readonly Texture char2Zoom = Engine.LoadTexture("char2RZoom.png");
+    readonly Texture char3Zoom = Engine.LoadTexture("char3RZoom.png");
+    readonly Texture char4Zoom = Engine.LoadTexture("char4RZoom.png");*/
     readonly Font font = Engine.LoadFont("FiraCode-Medium.ttf", pointSize: 20);
     readonly Font scoreFont = Engine.LoadFont("FiraCode-Medium.ttf", pointSize: 12);
-    float difficultyBasedOnChar = 1;
+    readonly Font pauseFont = Engine.LoadFont("FiraCode-Medium.ttf", pointSize: 8);
     //readonly Texture Tplat2 = Engine.LoadTexture("plat.png");
     //readonly Texture Tplat3 = Engine.LoadTexture("plat.png");
 
     readonly Texture background = Engine.LoadTexture("background.png");
     readonly Texture endBackground = Engine.LoadTexture("endBackground.png");
     readonly Texture homeBackground = Engine.LoadTexture("homeBackground.png");
+    readonly Texture pauseScreen = Engine.LoadTexture("PauseScreen.jpg");
     readonly Sound deadSound = Engine.LoadSound("Cat-sound-mp3.mp3");
     readonly Sound shootSound = Engine.LoadSound("shoot.mp3");
     readonly Sound jumpSound = Engine.LoadSound("jump.mp3");
@@ -43,6 +46,8 @@ class Game
     Vector2 bck = new Vector2(0, 0);
     Boolean death = false;
     Boolean homeScreen = true;
+    Boolean characterScreen = false;
+    Boolean pause = false;
     double difficulty = 1;
 
     Vector2 plat1 = new Vector2(100, 300);
@@ -96,10 +101,11 @@ class Game
 
     public void Update()
     {
-        difficulty = score * 0.0001 + 1;
+        difficulty = score * 0.000001 + 1;
         if(mainCharacter.getLocation().Y >= 480)
         {
             death = true;
+            Engine.StopMusic(1);
         }
         if(death)
         {
@@ -119,7 +125,9 @@ class Game
             }
             if (Engine.GetKeyHeld(Key.P))
             {
+                int tempTexture = mainCharacter.getTextureNum();
                 reset();
+                mainCharacter.setTexture(tempTexture);
             }
             if(Engine.GetKeyHeld(Key.H))
             {
@@ -130,116 +138,173 @@ class Game
         else if(homeScreen)
         {
             Engine.DrawTexture(homeBackground, bck);
+            Engine.DrawString("Emergency Key: Press 'P' to pause the game!", new Vector2(2, 425), Color.DarkRed, pauseFont);
+            Engine.DrawString("Press the right arrow to go to the character selection screen.", new Vector2(2, 435), Color.Black, pauseFont);
             if(Engine.GetKeyHeld(Key.S))
             {
                 homeScreen = false;
                 alreadyUpdatedScores = false;
             }
+            if(Engine.GetKeyHeld(Key.Right))
+            {
+                homeScreen = false;
+                characterScreen = true;
+            }
         }
+        /*else if(characterScreen)
+        {
+            Engine.DrawTexture(background, bck);
+            Engine.DrawString("If you are ready to play, press the 'S' key to begin!", new Vector2(2, 420), Color.Black, font);
+            Vector2 charScreenLoc = new Vector2(100, 200);
+            if(Engine.GetKeyHeld(Key.NumRow1))
+            {
+                mainCharacter.setTexture(1);
+                //draw corresponding Char Texture
+                Engine.DrawTexture(char1Zoom, charScreenLoc);
+            }
+            if(Engine.GetKeyHeld(Key.NumRow2))
+            {
+                mainCharacter.setTexture(2);
+                Engine.DrawTexture(char2Zoom, charScreenLoc);
+                difficulty = 1.5;
+            }
+            if(Engine.GetKeyHeld(Key.NumRow3))
+            {
+                mainCharacter.setTexture(3);
+                Engine.DrawTexture(char3Zoom, charScreenLoc);
+                difficulty = 2;
+            }
+            if(Engine.GetKeyHeld(Key.NumRow4))
+            {
+                mainCharacter.setTexture(4);
+                Engine.DrawTexture(char4Zoom, charScreenLoc);
+                difficulty = 4;
+            }
+            if(Engine.GetKeyHeld(Key.S))
+            {
+                homeScreen = false;
+                alreadyUpdatedScores = false;
+            }
+        }*/
         else
         {
-            if (height > score)
+            if(pause)
             {
-                score = height;
-            }
-            //platforms.Add(plat1);
-            //platforms.Add(plat2);
-            //platforms.Add(plat3);
-            Random random = new System.Random();
-
-            if (!jump && !movingDown)
-            {
-                mainCharacter.setYLoc(5);
-                height -= 5;
-            }
-            charHittingEnemy();
-            charHittingShield();
-            //charLocation.Y += 5;
-
-            if(shieldCooldown)
-            {
-                if(shieldCoolTimer >= 250)
+                Engine.DrawTexture(pauseScreen, bck);
+                if(Engine.GetKeyDown(Key.U))
                 {
-                    shieldCoolTimer = 0;
-                    shieldCooldown = false; //need to add different texture!!!!!!!!!!!!!-----------------------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                }
-                else
-                {
-                    shieldCoolTimer++;
+                    pause = false;
                 }
             }
-
-            Engine.DrawTexture(background, bck);
-            Engine.DrawTexture(mainCharacter.getCharTexture(), mainCharacter.getLocation());
-            //Engine.DrawTexture(Tplat1, plat1);
-            //Engine.DrawTexture(Tplat1, plat2);
-            //Engine.DrawTexture(Tplat1, plat3);
-
-            if (!compiled && !death)
+            else
             {
-                lastPlatY = 470;
-                platforms.Add(new Platform(new Vector2(140, 465)));
-                for (int i = 0; i < 10; i++)
+                if (height > score)
                 {
-
-                    //int enemyProb = random.Next(0, 100);
-                    lastPlatY = random.Next(lastPlatY - 115, lastPlatY - 50);
-                    Platform temp = new Platform(new Vector2(random.Next(0, 280), lastPlatY));
-
-                    platforms.Add(temp);
-                    Engine.PlayMusic(backgroundSound2);
-                    //Engine.DrawTexture(customPlatT, temp);
+                    score = height;
                 }
-                compiled = true;
-            }
+                //platforms.Add(plat1);
+                //platforms.Add(plat2);
+                //platforms.Add(plat3);
+                Random random = new System.Random();
 
-            foreach (Platform plat in platforms)
-            {
-                Engine.DrawTexture(customPlatT, plat.getVector());
-            }
-            foreach (Enemy enemy in enemies)
-            {
-                Engine.DrawTexture(enemyPic, enemy.getLocation());
-            }
-            foreach(Vector2 tramp in trampolines)
-            {
-                Engine.DrawTexture(trampolineTex, tramp);
-            }
-            foreach (Vector2 cap in flyingCaps)
-            {
-                Engine.DrawTexture(capText, cap);
-            }
-            foreach (Vector2 shield in shields)
-            {
-                Engine.DrawTexture(shieldTex, shield);
-            }
-            Engine.DrawString(score.ToString(), scoreVec, Color.Purple, font);
+                if (!jump && !movingDown)
+                {
+                    mainCharacter.setYLoc(5);
+                    height -= 5;
+                }
+                charHittingEnemy();
+                charHittingShield();
+                //charLocation.Y += 5;
 
-            time++;
+                if(shieldCooldown)
+                {
+                    if(shieldCoolTimer >= 250)
+                    {
+                        shieldCoolTimer = 0;
+                        shieldCooldown = false; //need to add different texture!!!!!!!!!!!!!-----------------------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    }
+                    else
+                    {
+                        shieldCoolTimer++;
+                    }
+                }
 
-            makePlatforms();
-            //charActions();
-            if(Engine.GetKeyHeld(Key.A))
-            {
-                mainCharacter.respondToKey("A");
-            }
-            if(Engine.GetKeyHeld(Key.D))
-            {
-                mainCharacter.respondToKey("D");
-            }
-            if(Engine.GetKeyDown(Key.Space))
-            {
-                Engine.PlaySound(shootSound, false, 0);
+                Engine.DrawTexture(background, bck);
+                Engine.DrawTexture(mainCharacter.getCharTexture(), mainCharacter.getLocation());
+                //Engine.DrawTexture(Tplat1, plat1);
+                //Engine.DrawTexture(Tplat1, plat2);
+                //Engine.DrawTexture(Tplat1, plat3);
 
-                ////////////////////////////////////////////////////////////////////////////////////////
-                bullets.Add(mainCharacter.shoot());
-            }
-            jumping();
-            shootingBullet();
-            //}
+                if (!compiled && !death)
+                {
+                    lastPlatY = 470;
+                    platforms.Add(new Platform(new Vector2(140, 465)));
+                    for (int i = 0; i < 10; i++)
+                    {
+
+                        //int enemyProb = random.Next(0, 100);
+                        lastPlatY = random.Next(lastPlatY - 115, lastPlatY - 50);
+                        Platform temp = new Platform(new Vector2(random.Next(0, 280), lastPlatY));
+
+                        platforms.Add(temp);
+                        Engine.PlayMusic(backgroundSound2);
+                        //Engine.DrawTexture(customPlatT, temp);
+                    }
+                    compiled = true;
+                }
+
+                foreach (Platform plat in platforms)
+                {
+                    Engine.DrawTexture(customPlatT, plat.getVector());
+                }
+                foreach (Enemy enemy in enemies)
+                {
+                    Engine.DrawTexture(enemyPic, enemy.getLocation());
+                }
+                foreach(Vector2 tramp in trampolines)
+                {
+                    Engine.DrawTexture(trampolineTex, tramp);
+                }
+                foreach (Vector2 cap in flyingCaps)
+                {
+                    Engine.DrawTexture(capText, cap);
+                }
+                foreach (Vector2 shield in shields)
+                {
+                    Engine.DrawTexture(shieldTex, shield);
+                }
+                Engine.DrawString(score.ToString(), scoreVec, Color.Purple, font);
+
+                time++;
+
+                makePlatforms();
+                //charActions();
+                if(Engine.GetKeyHeld(Key.A))
+                {
+                    mainCharacter.respondToKey("A");
+                }
+                if(Engine.GetKeyHeld(Key.D))
+                {
+                    mainCharacter.respondToKey("D");
+                }
+                if(Engine.GetKeyDown(Key.Space))
+                {
+                    Engine.PlaySound(shootSound, false, 0);
+
+                    ////////////////////////////////////////////////////////////////////////////////////////
+                    bullets.Add(mainCharacter.shoot());
+                }
+                if(Engine.GetKeyDown(Key.P))
+                {
+                    pause = true;
+                }
+                jumping();
+                shootingBullet();
+                //}
 
         
-            //breakPlatform();
+                //breakPlatform();
+            }
         }
     }
 
@@ -265,6 +330,8 @@ class Game
         height = 0;
         score = 0;
         compiled = false;
+        characterScreen = false;
+        pause = false;
     }
     public void shootingBullet()
     {
@@ -304,7 +371,7 @@ class Game
             if ((jump || hitting(mainCharacter.getLocation(), platforms)) && !trampJump && !flying)
             {
                 jump = true;
-                if(hitting(mainCharacter.getLocation(), platforms) && jump)
+                if(hitting(mainCharacter.getLocation(), platforms))
                 {
                     Engine.PlaySound(jumpSound, false, 0);
 
@@ -346,7 +413,7 @@ class Game
 
             }
 
-            if (flying || hittingCap(mainCharacter.getLocation(), flyingCaps) && !trampJump)
+            if (flying || hittingCap(mainCharacter.getLocation(), flyingCaps))
             {
                 flying = true;
                 
@@ -580,10 +647,10 @@ class Game
             platforms.Add(new Platform(new Vector2(newX, newY)));
             platforms.RemoveAt(0);
 
-            double enemyProb = random.Next(0, 100) * difficulty * difficultyBasedOnChar;
-            double trampolineProb = random.Next(0, 100) / difficulty / difficultyBasedOnChar;
-            double shieldProb = random.Next(0, 100) / difficulty / difficultyBasedOnChar;
-            double capProb = random.Next(0, 100) / difficulty / difficultyBasedOnChar;
+            double enemyProb = random.Next(0, 100) * difficulty;
+            double trampolineProb = random.Next(0, 100) / difficulty;
+            double shieldProb = random.Next(0, 100) / difficulty;
+            double capProb = random.Next(0, 100) / difficulty;
             Boolean trampPresent = false;
             Boolean enemyPresent = false;
             Boolean capPresent = false;
@@ -632,7 +699,7 @@ class Game
 
             foreach (Platform platform in platforms)
             {
-                if (Math.Abs(charLocation.X - platform.getVector().X) <= 40 && charLocation.Y - platform.getVector().Y <= -35 && charLocation.Y - platform.getVector().Y >= -40)
+                if (Math.Abs(charLocation.X - platform.getVector().X) <= 40 && charLocation.Y - platform.getVector().Y <= -30 && charLocation.Y - platform.getVector().Y >= -40)
                 {
                     return true;
                 }
@@ -687,12 +754,9 @@ class Game
     {
         int charX = (int)mainCharacter.getLocation().X;
         int charY = (int)mainCharacter.getLocation().Y;
-        Boolean removed = false;
-        int enemyNum = -1;
 
         if (!trampJump)
         {
-            
             foreach (Enemy enemy in enemies)
             {
                 int enemyX = (int)enemy.getLocation().X;
@@ -705,21 +769,14 @@ class Game
                         charHitEnemy();
                         death = true;
                         jump = false;
-                   
                     }
                     else
                     {
                         shieldOn = false;
                         shieldCooldown = true;
-                        removed = true;
                     }
                 }
-                enemyNum++;
             }
-        }
-        if (removed)
-        {
-            enemies.RemoveAt(enemyNum);
         }
         //return false;
 
@@ -759,7 +816,6 @@ class Game
                     shieldOn = true;
                     shields.RemoveAt(i);
                     i--;
-
                 }
             }
         }
