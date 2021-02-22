@@ -20,7 +20,7 @@ class Game
     readonly Texture char1Zoom = Engine.LoadTexture("char1Zoom.png");
     readonly Texture char2Zoom = Engine.LoadTexture("char2Zoom.png");
     readonly Texture char3Zoom = Engine.LoadTexture("char3Zoom.png");
-    //readonly Texture char4Zoom = Engine.LoadTexture("char4Zoom.png");
+    readonly Texture char4Zoom = Engine.LoadTexture("char4Zoom.png");
     readonly Font font = Engine.LoadFont("FiraCode-Medium.ttf", pointSize: 20);
     readonly Font scoreFont = Engine.LoadFont("FiraCode-Medium.ttf", pointSize: 12);
     readonly Font pauseFont = Engine.LoadFont("FiraCode-Medium.ttf", pointSize: 8);
@@ -173,6 +173,7 @@ class Game
             Vector2 char1Loc = new Vector2(80, 200);
             Vector2 char2Loc = new Vector2(-20, 190);
             Vector2 char3Loc = new Vector2(40, 180);
+            Vector2 char4Loc = new Vector2(90, 200);
             if(Engine.GetKeyDown(Key.NumRow1))
             {
                 charSelect = 1;
@@ -187,10 +188,11 @@ class Game
                 charSelect = 3;
                 //difficulty = 2;
             }
-            /*if(Engine.GetKeyHeld(Key.NumRow4))
+            if(Engine.GetKeyHeld(Key.NumRow4))
             {
+                charSelect = 4;
                 difficulty = 4;
-            }*/
+            }
             mainCharacter.setTexture(charSelect);
             if(charSelect == 2)
             {
@@ -200,10 +202,10 @@ class Game
             {
                 Engine.DrawTexture(char3Zoom, char3Loc);
             }
-            /*else if(charSelect == 4)
+            else if(charSelect == 4)
             {
-                Engine.DrawTexture(char4Zoom, charScreenLoc);
-            }*/
+                Engine.DrawTexture(char4Zoom, char4Loc);
+            }
             else
             {
                 Engine.DrawTexture(char1Zoom, char1Loc);

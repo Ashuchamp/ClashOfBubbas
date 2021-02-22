@@ -95,7 +95,7 @@ class Character
     }
     public Vector2 shoot()
     {
-        charTexture = Engine.LoadTexture("shoot.png");
+        charTexture = Engine.LoadTexture("char" + numTexture + "Shoot.png");
         Vector2 temp = new Vector2();
         temp = charLocation;
         temp.Y = temp.Y - 2;
