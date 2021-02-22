@@ -698,10 +698,10 @@ class Game
             platforms.Add(new Platform(new Vector2(newX, newY)));
             platforms.RemoveAt(0);
 
-            double enemyProb = random.Next(0, 100) * difficulty * difficultyBasedOnChar;
-            double trampolineProb = random.Next(0, 100) / difficulty / difficultyBasedOnChar;
-            double shieldProb = random.Next(0, 100) / difficulty / difficultyBasedOnChar;
-            double capProb = random.Next(0, 100) / difficulty / difficultyBasedOnChar;
+            double enemyProb = random.Next(0, 100) / difficulty / difficultyBasedOnChar;
+            double trampolineProb = random.Next(0, 100) * difficulty * difficultyBasedOnChar;
+            double shieldProb = random.Next(0, 100) * difficulty * difficultyBasedOnChar;
+            double capProb = random.Next(0, 100) * difficulty * difficultyBasedOnChar;
             Boolean trampPresent = false;
             Boolean enemyPresent = false;
             Boolean capPresent = false;
@@ -863,7 +863,7 @@ class Game
                 int enemyX = (int)enemy.getLocation().X;
                 int enemyY = (int)enemy.getLocation().Y;
 
-                if (Math.Abs(enemyX - charX) < 20 && Math.Abs(enemyY - charY) < 20)
+                if (Math.Abs(enemyX - charX) < 40 && Math.Abs(enemyY - charY) < 10)
                 {
                     if (!shieldOn && !shieldCooldown)
                     {
