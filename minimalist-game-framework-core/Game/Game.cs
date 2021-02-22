@@ -58,7 +58,7 @@ class Game
 
     Vector2 scoreBoardHeadVec = new Vector2(10, 225);
 
-    Vector2 bossLocation = new Vector2(5, 20);
+    Vector2 bossLocation = new Vector2(5, 10);
 
     int time = 0;
     //    public void plats()
@@ -81,6 +81,7 @@ class Game
     private Boolean compiled;
     private Boolean shieldOn;
     private Boolean alreadyUpdatedScores;
+    Boolean bossDirectionRight = false;
 
     private Boolean trampJump = false;
     private Boolean flying = false;
@@ -100,7 +101,6 @@ class Game
 
     public void Update()
     {
-        bubbaBoss();
         difficulty = score * 0.0001 + 1;
         if(mainCharacter.getLocation().Y >= 480)
         {
@@ -246,6 +246,8 @@ class Game
         
             //breakPlatform();
         }
+        bubbaBoss();
+
     }
 
     public void reset()
@@ -360,6 +362,10 @@ class Game
                     double x;
                     x = mainCharacter.getLocation().Y - 15;
                     height += 15;
+                    Vector2 temp = mainCharacter.getLocation();
+                    temp.X += 5;
+                    temp.Y -= 10;
+                    Engine.DrawTexture(capText, temp); ////////////////////////////////////////////////////////////////////////////////
                     mainCharacter.newYPos((float)x);
                     System.Threading.Thread.Sleep(10);
                     count++;
@@ -692,19 +698,38 @@ class Game
     /// </summary>
     public void bubbaBoss()
     {
-        if (score % 3000 > 0 && score%3000 < 1500)
+        if (score > 4000 && score % 3000 > 0 && score%3000 < 2000)
         {
+
             if (bossLocation.X > 310)
             {
-                bossLocation.X -= 10;
+                bossDirectionRight = false;
+                //System.Threading.Thread.Sleep(10);
             }
 
-            if (bossLocation.X < 0)
+            if (bossLocation.X < 10)
             {
-                bossLocation.X += 10;
+                bossDirectionRight = true;
+                //System.Threading.Thread.Sleep(10);
             }
 
+            if(bossDirectionRight == true)
+            {
+                bossLocation.X += 5;
+            }
+            else
+            {
+                bossLocation.X -= 5;
+            } 
             Engine.DrawTexture(bossEnemy, bossLocation);
+            
+            if(Math.Abs(bossLocation.X - mainCharacter.getLocation().X) < 80 && Math.Abs(bossLocation.X - mainCharacter.getLocation().X) > 0 && Math.Abs(bossLocation.X - mainCharacter.getLocation().Y) > 0 && Math.Abs(bossLocation.X - mainCharacter.getLocation().Y) < 50)
+            {
+                death = true;
+            }
+
+
+
         }
     }
 
