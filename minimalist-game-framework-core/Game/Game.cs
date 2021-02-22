@@ -12,12 +12,13 @@ class Game
     readonly Texture Tplat1 = Engine.LoadTexture("plat.png");
     readonly Texture customPlatT = Engine.LoadTexture("plat1.png");
     readonly Texture bulletPic = Engine.LoadTexture("bullet.png");
-    readonly Texture enemyPic = Engine.LoadTexture("enemy.png");
+    readonly Texture enemyPic = Engine.LoadTexture("enemy1.png");
     readonly Texture capText = Engine.LoadTexture("flyingCap.png");
     readonly Texture trampolineTex = Engine.LoadTexture("trampoline.png");
     readonly Texture shieldTex = Engine.LoadTexture("shield.png");
     readonly Font font = Engine.LoadFont("FiraCode-Medium.ttf", pointSize: 20);
     readonly Font scoreFont = Engine.LoadFont("FiraCode-Medium.ttf", pointSize: 12);
+    float difficultyBasedOnChar = 1;
     //readonly Texture Tplat2 = Engine.LoadTexture("plat.png");
     //readonly Texture Tplat3 = Engine.LoadTexture("plat.png");
 
@@ -95,7 +96,7 @@ class Game
 
     public void Update()
     {
-        difficulty = score * 0.000001 + 1;
+        difficulty = score * 0.0001 + 1;
         if(mainCharacter.getLocation().Y >= 480)
         {
             death = true;
@@ -303,7 +304,7 @@ class Game
             if ((jump || hitting(mainCharacter.getLocation(), platforms)) && !trampJump && !flying)
             {
                 jump = true;
-                if(hitting(mainCharacter.getLocation(), platforms))
+                if(hitting(mainCharacter.getLocation(), platforms) && jump)
                 {
                     Engine.PlaySound(jumpSound, false, 0);
 
@@ -345,7 +346,7 @@ class Game
 
             }
 
-            if (flying || hittingCap(mainCharacter.getLocation(), flyingCaps))
+            if (flying || hittingCap(mainCharacter.getLocation(), flyingCaps) && !trampJump)
             {
                 flying = true;
                 
@@ -579,10 +580,10 @@ class Game
             platforms.Add(new Platform(new Vector2(newX, newY)));
             platforms.RemoveAt(0);
 
-            double enemyProb = random.Next(0, 100) * difficulty;
-            double trampolineProb = random.Next(0, 100) / difficulty;
-            double shieldProb = random.Next(0, 100) / difficulty;
-            double capProb = random.Next(0, 100) / difficulty;
+            double enemyProb = random.Next(0, 100) * difficulty * difficultyBasedOnChar;
+            double trampolineProb = random.Next(0, 100) / difficulty / difficultyBasedOnChar;
+            double shieldProb = random.Next(0, 100) / difficulty / difficultyBasedOnChar;
+            double capProb = random.Next(0, 100) / difficulty / difficultyBasedOnChar;
             Boolean trampPresent = false;
             Boolean enemyPresent = false;
             Boolean capPresent = false;
@@ -631,7 +632,7 @@ class Game
 
             foreach (Platform platform in platforms)
             {
-                if (Math.Abs(charLocation.X - platform.getVector().X) <= 40 && charLocation.Y - platform.getVector().Y <= -30 && charLocation.Y - platform.getVector().Y >= -40)
+                if (Math.Abs(charLocation.X - platform.getVector().X) <= 40 && charLocation.Y - platform.getVector().Y <= -35 && charLocation.Y - platform.getVector().Y >= -40)
                 {
                     return true;
                 }
@@ -686,9 +687,12 @@ class Game
     {
         int charX = (int)mainCharacter.getLocation().X;
         int charY = (int)mainCharacter.getLocation().Y;
+        Boolean removed = false;
+        int enemyNum = -1;
 
         if (!trampJump)
         {
+            
             foreach (Enemy enemy in enemies)
             {
                 int enemyX = (int)enemy.getLocation().X;
@@ -701,14 +705,21 @@ class Game
                         charHitEnemy();
                         death = true;
                         jump = false;
+                   
                     }
                     else
                     {
                         shieldOn = false;
                         shieldCooldown = true;
+                        removed = true;
                     }
                 }
+                enemyNum++;
             }
+        }
+        if (removed)
+        {
+            enemies.RemoveAt(enemyNum);
         }
         //return false;
 
@@ -748,6 +759,7 @@ class Game
                     shieldOn = true;
                     shields.RemoveAt(i);
                     i--;
+
                 }
             }
         }
