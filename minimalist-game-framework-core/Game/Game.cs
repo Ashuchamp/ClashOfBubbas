@@ -823,7 +823,7 @@ class Game
         Boolean removed = false;
         int enemyNum = -1;
 
-        if (!trampJump)
+        if (!trampJump && !flying)
         {
             
             foreach (Enemy enemy in enemies)
