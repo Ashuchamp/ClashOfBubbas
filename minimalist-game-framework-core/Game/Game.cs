@@ -6,6 +6,7 @@ class Game
 {
     public static readonly string Title = "Minimalist Game Framework";
     public static readonly Vector2 Resolution = new Vector2(320, 480);
+    //Texture charRight = Engine.LoadTexture("charR.png");
 
     readonly Texture bubba = Engine.LoadTexture("bubba.png");
     readonly Texture Tplat1 = Engine.LoadTexture("plat.png");
@@ -31,6 +32,7 @@ class Game
     readonly Texture background = Engine.LoadTexture("background.png");
     readonly Texture endBackground = Engine.LoadTexture("endBackground.png");
     readonly Texture homeBackground = Engine.LoadTexture("homeBackground.png");
+
     readonly Texture pauseScreen = Engine.LoadTexture("PauseScreen.jpg");
     readonly Sound deadSound = Engine.LoadSound("Cat-sound-mp3.mp3");
     readonly Sound shootSound = Engine.LoadSound("shoot.mp3");
@@ -65,6 +67,8 @@ class Game
     Vector2 finalScoreVec = new Vector2(70, 210);
 
     Vector2 scoreBoardHeadVec = new Vector2(10, 225);
+    Vector2 bossLocation = new Vector2(5, 10);
+
 
     int time = 0;
     //    public void plats()
@@ -94,6 +98,8 @@ class Game
     private int downCount;
     private int lastPlatY;
     private Boolean shieldCooldown;
+    Boolean bossDirectionRight = false;
+
     private int shieldCoolTimer;
     public Game()
     {
@@ -310,6 +316,15 @@ class Game
                 //breakPlatform();
             }
         }
+        bubbaBoss();
+        if (shieldOn)
+        {
+            Vector2 temp = mainCharacter.getLocation();
+            temp.X -= 3;
+            temp.Y -= 3;
+            Engine.DrawTexture(shieldForChar, temp);
+
+        }
     }
 
     public void reset()
@@ -426,6 +441,10 @@ class Game
                     double x;
                     x = mainCharacter.getLocation().Y - 15;
                     height += 15;
+                    Vector2 temp = mainCharacter.getLocation();
+                    temp.X += 5;
+                    temp.Y -= 10;
+                    Engine.DrawTexture(capText, temp);
                     mainCharacter.newYPos((float)x);
                     System.Threading.Thread.Sleep(10);
                     count++;
@@ -696,6 +715,49 @@ class Game
         }
     }
 
+    public void bubbaBoss()
+    {
+        if (score > 4000 && score % 3000 > 0 && score % 3000 < 2000)
+        {
+
+            if (bossLocation.X > 310)
+            {
+                bossDirectionRight = false;
+                //System.Threading.Thread.Sleep(10);
+            }
+
+            if (bossLocation.X < 10)
+            {
+                bossDirectionRight = true;
+                //System.Threading.Thread.Sleep(10);
+            }
+
+            if (bossDirectionRight == true)
+            {
+                bossLocation.X += 5;
+            }
+            else
+            {
+                bossLocation.X -= 5;
+            }
+            Engine.DrawTexture(bossEnemy, bossLocation);
+
+            if (!shieldOn && Math.Abs(bossLocation.X - mainCharacter.getLocation().X) < 80 && Math.Abs(bossLocation.X - mainCharacter.getLocation().X) > 0 && Math.Abs(bossLocation.X - mainCharacter.getLocation().Y) > 0 && Math.Abs(bossLocation.X - mainCharacter.getLocation().Y) < 50)
+            {
+                death = true;
+            }
+
+            if (shieldOn)
+            {
+                score += 1000;
+                shieldOn = false;
+            }
+
+
+
+        }
+    }
+
     public Boolean hitting(Vector2 charLocation, List<Platform> platforms)
     {
         if (!death || !trampJump)
@@ -828,6 +890,7 @@ class Game
                 if (Math.Abs(charX - currentShield.X) <= 40 && charY - currentShield.Y <= -30 && charY - currentShield.Y >= -40 && !shieldOn)
                 {
                     shieldOn = true;
+                    Engine.DrawTexture(shieldForChar, mainCharacter.getLocation());
                     shields.RemoveAt(i);
                     i--;
 
